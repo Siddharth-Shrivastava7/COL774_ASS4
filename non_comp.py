@@ -1,4 +1,3 @@
-from warnings import formatwarning
 import torch
 from torch._C import dtype
 import torch.nn as nn
@@ -15,9 +14,12 @@ import string
 import os 
 from torch.nn.utils.rnn import pack_padded_sequence 
 from tqdm import tqdm 
+from torch.utils.data.sampler import SubsetRandomSampler
+import os 
 
+os.environ["CUDA_VISIBLE_DEVICES"] = "1" 
 
-import nltk 
+import nltk
 stopwords = nltk.corpus.stopwords.words('english') 
 from nltk.stem import WordNetLemmatizer 
 wordnet_lemmatizer = WordNetLemmatizer()
@@ -30,9 +32,10 @@ parser = argparse.ArgumentParser()
 complete the req args 
 '''
 
-parser.add_argument('-tr', '--train_tsv_path', default='/home/cse/phd/anz208849/assignments/COL774/ass4/Train_text.tsv') 
-parser.add_argument('-imdirtr', '--image_dir_train', default='/home/cse/phd/anz208849/assignments/COL774/ass4/train_data') 
-parser.add_argument('-imdirte', '--image_dir_test', default='/home/cse/phd/anz208849/assignments/COL774/ass4/test_data') 
+parser.add_argument('-tr', '--train_tsv_path', default='/home/cse/phd/anz208849/assignments/COL774/COL774_ASS4/Train_text.tsv') 
+parser.add_argument('-imdirtr', '--image_dir_train', default='/home/cse/phd/anz208849/assignments/COL774/ass4') 
+parser.add_argument('-imdirte', '--image_dir_test', default='/home/cse/phd/anz208849/assignments/COL774/ass4')  
+parser.add_argument('-ms', '--model_save_path', default='/home/cse/phd/anz208849/assignments/COL774/ass4/non_comp.pth')
 
 args = parser.parse_args()
 
@@ -110,8 +113,13 @@ class CaptionsPreprocessing:
         """
         captions_dict = {}
         with open(self.captions_file_path, 'r', encoding='utf-8') as f:
-            for img_caption_line in f.readlines():
-                img_captions = img_caption_line.strip().split('\t')
+            for img_caption_line in f.readlines(): 
+                # print(img_caption_line) 
+                img_captions = img_caption_line.strip().split('\t') 
+                # print(img_captions[0])   
+                # print(img_captions[0].split('/')[-1])  
+                img_cap_path = os.path.join(args.image_dir_train, img_captions[0])   
+                # print(img_cap_path)
                 captions_dict[img_captions[0]] = img_captions[1]
                 # print(img_captions[0])
                 # break
@@ -247,8 +255,9 @@ class ImageCaptionsDataset(Dataset):
 
     def __getitem__(self, idx):
         img_name = self.image_ids[idx] 
-        # image = io.imread(os.path.join(self.img_dir,img_name)) 
-        image = io.imread(img_name)
+        # print(img_name)
+        image = io.imread(os.path.join(self.img_dir,img_name)) 
+        # image = io.imread(img_name)
         captions = self.captions_dict[img_name] 
         # print(captions) 
         # print('**************')
@@ -280,14 +289,14 @@ class ImageCaptionsNet(nn.Module):
         modules = list(resnet.children())[:-1]      # delete the last fc layer.
         self.resnet = nn.Sequential(*modules)
         self.linear = nn.Linear(resnet.fc.in_features, embed_size) 
-        # self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)   ## to try 
+        self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)   ## to try  
         ## tunning only few layers since the dataset is small
         self.fine_tune(fine_tune_start)
 
         ## LSTM decoder 
         # self.drop_prob= drop_pr 
         self.lstm = nn.LSTM(embed_size, hidden_size , num_layers, batch_first=True) 
-        self.dropout = nn.Dropout(drop_pr)   
+        self.dropout = nn.Dropout(drop_pr)  
         self.embed = nn.Embedding(vocab_size, embed_size)   
         self.linear_lstm = nn.Linear(hidden_size, vocab_size)
         # self.max_seq_length = max_seq_length   
@@ -304,8 +313,8 @@ class ImageCaptionsNet(nn.Module):
         ## cnn encoder 
         feat = self.resnet(image_batch) 
         feat = feat.reshape(feat.size(0), -1) 
-        # feat = self.bn(self.linear(feat))
-        feat = self.linear(feat)  
+        # feat = self.bn(self.linear(feat))  ## adding batch norm  
+        feat = self.linear(feat)    
 
         # print(feat.shape)  # torch.Size([32, 256]) 
 
@@ -316,10 +325,10 @@ class ImageCaptionsNet(nn.Module):
         embeddings = torch.cat((feat.unsqueeze(1), embeddings[:, :-1,:]), dim=1)   
         # print(embeddings.shape) # torch.Size([32, 10, 256]) 
         # embeddings = torch.cat((feat.unsqueeze(1), embeddings), dim=1) 
-        embeddings = self.dropout(embeddings)
+        # embeddings = self.dropout(embeddings)  ## dropout ignoring for now//so as to first overfit 
         # print(embeddings.shape) 
         # packed = pack_padded_sequence(embeddings, lengths, batch_first=True)  ## not knowing its significance currently  
-        # print(packed.shape)
+        # print(packed.shape) 
         hiddens, c = self.lstm(embeddings) 
         # print(hiddens.shape) # torch.Size([32, 10, 256]) 
         outputs = self.linear_lstm(hiddens)  
@@ -369,32 +378,62 @@ if __name__ == '__main__':
 
     # print(vocab_size) # 1837 ## for the current model 
 
-    net = ImageCaptionsNet(embed_size=256, hidden_size=256, vocab_size=vocab_size)
+    net = ImageCaptionsNet(embed_size=512, hidden_size=512, vocab_size=vocab_size)
     # If GPU training is required
     # net = net.cuda() 
     net = net.to(device)
 
     IMAGE_DIR = args.image_dir_train ## train image directory 
+
     # Creating the Dataset
-    train_dataset = ImageCaptionsDataset(
+    dataset = ImageCaptionsDataset(
         IMAGE_DIR, captions_preprocessing_obj.captions_dict, img_transform=img_transform,
         captions_transform=captions_preprocessing_obj.captions_transform
     ) 
+    
+    # print('*******************')
+    # print(train_dataset)
+
     # Define your hyperparameters
     NUMBER_OF_EPOCHS = 3
     LEARNING_RATE = 1e-1
-    BATCH_SIZE = 32
+    BATCH_SIZE = 256 ## using gpu!!
     NUM_WORKERS = 0 # Parallel threads for dataloading
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=LEARNING_RATE) 
 
+    # print(train_dataset)
+    # print(len(train_dataset)) 
+
+    validation_split = 0.1
+    dataset_size = len(dataset) 
+    indices = list(range(dataset_size)) 
+    split = int(np.floor(validation_split * dataset_size)) 
+    shuffle_dataset = True
+    if shuffle_dataset :
+        np.random.seed(14)
+        np.random.shuffle(indices)
+    train_indices, val_indices = indices[split:], indices[:split]  
+    # print(len(train_indices)) 
+    # print(len(val_indices))
+    train_sampler = SubsetRandomSampler(train_indices)
+    valid_sampler = SubsetRandomSampler(val_indices)
+
+    train_loader = DataLoader(dataset, batch_size=BATCH_SIZE, 
+                                            sampler=train_sampler, num_workers=NUM_WORKERS) 
+    val_loader = DataLoader(dataset, batch_size=BATCH_SIZE,
+                                                    sampler=valid_sampler, num_workers=NUM_WORKERS) 
+ 
     # Creating the DataLoader for batching purposes
-    train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)  
+    # print(train_dataset) 
+    # train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)    ## original
     # print(train_loader)
 
-    import os
+    best_val_loss = np.inf 
+    val_check = 2
     for epoch in tqdm(range(NUMBER_OF_EPOCHS)):
         for batch_idx, sample in tqdm(enumerate(train_loader)):
+            train_epoch_loss = 0
             net.zero_grad()  
             image_batch, captions_batch = sample['image'], sample['captions']
             # image_batch, captions_batch, lengths_batch = sample['image'], sample['captions'], sample['lengths'] 
@@ -410,12 +449,31 @@ if __name__ == '__main__':
             # print(output_captions.shape) # torch.Size([32, 10, 1837])
             # output_captions = net((image_batch, captions_batch, lengths_batch)) 
             # print(captions_batch.shape) # torch.Size([32, 10])
-            loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1)) 
-            print(loss.item())
+            loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
+            train_epoch_loss += loss
             loss.backward()
-            optimizer.step()
+            optimizer.step() 
+        train_epoch_loss /= len(train_loader)
+        print('train_loss_epoch:',train_epoch_loss, '  ', loss.item())
+
+        if epoch % val_check == 0: 
+            print('in_validation')
+            for val_sample in tqdm(val_loader):
+                val_epoch_loss = 0 
+                val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
+                val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
+                val_output_captions = net((val_image_batch, val_captions_batch))
+                val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
+                val_epoch_loss+=val_loss
+            val_epoch_loss /= len(val_loader)
+            print('val_loss_epoch:',epoch, '  ', loss.item())  
+            if val_loss < best_val_loss: 
+                best_val_loss = val_loss
+                torch.save(args.save(args.model_save_path)) 
+                print('Model_updated')
+
     
-        print("Iteration: " + str(epoch + 1))
+        # print("Epoch: " + str(epoch + 1))
 
 
 
