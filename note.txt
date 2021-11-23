@@ -1,0 +1,1396 @@
+train_loss_epoch: 0    0.005343717057257891
+in_validation
+val_loss_epoch: 0    7.050848960876465
+Model_updated
+train_loss_epoch: 1    0.004991242662072182
+in_validation
+val_loss_epoch: 1    6.517389297485352
+Model_updated
+train_loss_epoch: 2    0.004533911123871803
+in_validation
+val_loss_epoch: 2    5.816948890686035
+Model_updated
+train_loss_epoch: 3    0.0040577915497124195
+in_validation
+val_loss_epoch: 3    5.0601911544799805
+Model_updated
+train_loss_epoch: 4    0.003534534713253379
+in_validation
+val_loss_epoch: 4    4.6314191818237305
+Model_updated
+train_loss_epoch: 5    0.0032907123677432537
+in_validation
+val_loss_epoch: 5    4.485802173614502
+Model_updated
+train_loss_epoch: 6    0.0030369050800800323
+in_validation
+val_loss_epoch: 6    4.395693778991699
+Model_updated
+train_loss_epoch: 7    0.003225162159651518
+in_validation
+val_loss_epoch: 7    4.325231075286865
+Model_updated
+train_loss_epoch: 8    0.0028815660625696182
+in_validation
+val_loss_epoch: 8    4.262545108795166
+Model_updated
+train_loss_epoch: 9    0.003179004183039069
+in_validation
+val_loss_epoch: 9    4.20628547668457
+Model_updated
+train_loss_epoch: 10    0.0029188243206590414
+in_validation
+val_loss_epoch: 10    4.154416084289551
+Model_updated
+train_loss_epoch: 11    0.0029832664877176285
+in_validation
+val_loss_epoch: 11    4.10996675491333
+Model_updated
+train_loss_epoch: 12    0.0026971595361828804
+in_validation
+val_loss_epoch: 12    4.071450233459473
+Model_updated
+train_loss_epoch: 13    0.0028202130924910307
+in_validation
+val_loss_epoch: 13    4.041011333465576
+Model_updated
+train_loss_epoch: 14    0.0029861966613680124
+in_validation
+val_loss_epoch: 14    4.017423152923584
+Model_updated
+train_loss_epoch: 15    0.0029172152280807495
+in_validation
+val_loss_epoch: 15    3.9987244606018066
+Model_updated
+train_loss_epoch: 16    0.0026977492962032557
+in_validation
+val_loss_epoch: 16    3.9834463596343994
+Model_updated
+train_loss_epoch: 17    0.0027046457398682833
+in_validation
+val_loss_epoch: 17    3.971118927001953
+Model_updated
+train_loss_epoch: 18    0.0029461844824254513
+in_validation
+val_loss_epoch: 18    3.960188150405884
+Model_updated
+train_loss_epoch: 19    0.002738544251769781
+in_validation
+val_loss_epoch: 19    3.9505767822265625
+Model_updated
+train_loss_epoch: 20    0.0027014112565666437
+in_validation
+val_loss_epoch: 20    3.942061185836792
+Model_updated
+train_loss_epoch: 21    0.002547950018197298
+in_validation
+val_loss_epoch: 21    3.93410587310791
+Model_updated
+train_loss_epoch: 22    0.0027619160246104
+in_validation
+val_loss_epoch: 22    3.9268479347229004
+Model_updated
+train_loss_epoch: 23    0.002831126796081662
+in_validation
+val_loss_epoch: 23    3.91935658454895
+Model_updated
+train_loss_epoch: 24    0.0027457247488200665
+in_validation
+val_loss_epoch: 24    3.912313938140869
+Model_updated
+train_loss_epoch: 25    0.0027520975563675165
+in_validation
+val_loss_epoch: 25    3.9060122966766357
+Model_updated
+train_loss_epoch: 26    0.002770376158878207
+in_validation
+val_loss_epoch: 26    3.8990049362182617
+Model_updated
+train_loss_epoch: 27    0.0029757670126855373
+in_validation
+val_loss_epoch: 27    3.892822265625
+Model_updated
+train_loss_epoch: 28    0.002725365338847041
+in_validation
+val_loss_epoch: 28    3.8871123790740967
+Model_updated
+train_loss_epoch: 29    0.002806446049362421
+in_validation
+val_loss_epoch: 29    3.8806400299072266
+Model_updated
+train_loss_epoch: 30    0.002664463594555855
+in_validation
+val_loss_epoch: 30    3.8740968704223633
+Model_updated
+train_loss_epoch: 31    0.0028702975250780582
+in_validation
+val_loss_epoch: 31    3.867097854614258
+Model_updated
+train_loss_epoch: 32    0.0026861606165766716
+in_validation
+val_loss_epoch: 32    3.860400676727295
+Model_updated
+train_loss_epoch: 33    0.00281236763112247
+in_validation
+val_loss_epoch: 33    3.8533546924591064
+Model_updated
+train_loss_epoch: 34    0.0027624003123492002
+in_validation
+val_loss_epoch: 34    3.8464410305023193
+Model_updated
+train_loss_epoch: 35    0.002714436501264572
+in_validation
+val_loss_epoch: 35    3.8396975994110107
+Model_updated
+train_loss_epoch: 36    0.00290560070425272
+in_validation
+val_loss_epoch: 36    3.83276629447937
+Model_updated
+train_loss_epoch: 37    0.002610870636999607
+in_validation
+val_loss_epoch: 37    3.825871467590332
+Model_updated
+train_loss_epoch: 38    0.0026080419775098562
+in_validation
+val_loss_epoch: 38    3.818610906600952
+Model_updated
+train_loss_epoch: 39    0.002632283139973879
+in_validation
+val_loss_epoch: 39    3.8112924098968506
+Model_updated
+train_loss_epoch: 40    0.0026458054780960083
+in_validation
+val_loss_epoch: 40    3.8038506507873535
+Model_updated
+train_loss_epoch: 41    0.0029010875150561333
+in_validation
+val_loss_epoch: 41    3.7968084812164307
+Model_updated
+train_loss_epoch: 42    0.0027943814639002085
+in_validation
+val_loss_epoch: 42    3.7896437644958496
+Model_updated
+train_loss_epoch: 43    0.002645680448040366
+in_validation
+val_loss_epoch: 43    3.782050371170044
+Model_updated
+train_loss_epoch: 44    0.0027727377600967884
+in_validation
+val_loss_epoch: 44    3.7750322818756104
+Model_updated
+train_loss_epoch: 45    0.0027068089693784714
+in_validation
+val_loss_epoch: 45    3.767528772354126
+Model_updated
+train_loss_epoch: 46    0.002895334968343377
+in_validation
+val_loss_epoch: 46    3.759207248687744
+Model_updated
+train_loss_epoch: 47    0.002607133239507675
+in_validation
+val_loss_epoch: 47    3.751131057739258
+Model_updated
+train_loss_epoch: 48    0.002666037529706955
+in_validation
+val_loss_epoch: 48    3.742734670639038
+Model_updated
+train_loss_epoch: 49    0.00262666423805058
+in_validation
+val_loss_epoch: 49    3.7349472045898438
+Model_updated
+train_loss_epoch: 50    0.002599812112748623
+in_validation
+val_loss_epoch: 50    3.725937843322754
+Model_updated
+train_loss_epoch: 51    0.0025259635876864195
+in_validation
+val_loss_epoch: 51    3.71679949760437
+Model_updated
+train_loss_epoch: 52    0.002519845264032483
+in_validation
+val_loss_epoch: 52    3.708364248275757
+Model_updated
+train_loss_epoch: 53    0.0027854435611516237
+in_validation
+val_loss_epoch: 53    3.7000279426574707
+Model_updated
+train_loss_epoch: 54    0.002637792145833373
+in_validation
+val_loss_epoch: 54    3.6911072731018066
+Model_updated
+train_loss_epoch: 55    0.0026015187613666058
+in_validation
+val_loss_epoch: 55    3.6824729442596436
+Model_updated
+train_loss_epoch: 56    0.0025719101540744305
+in_validation
+val_loss_epoch: 56    3.673522472381592
+Model_updated
+train_loss_epoch: 57    0.0026709006633609533
+in_validation
+val_loss_epoch: 57    3.66290020942688
+Model_updated
+train_loss_epoch: 58    0.002675105119124055
+in_validation
+val_loss_epoch: 58    3.652712345123291
+Model_updated
+train_loss_epoch: 59    0.002726953709498048
+in_validation
+val_loss_epoch: 59    3.6437554359436035
+Model_updated
+train_loss_epoch: 60    0.0023730166722089052
+in_validation
+val_loss_epoch: 60    3.633692979812622
+Model_updated
+train_loss_epoch: 61    0.0025404731277376413
+in_validation
+val_loss_epoch: 61    3.6237306594848633
+Model_updated
+train_loss_epoch: 62    0.002537739695981145
+in_validation
+val_loss_epoch: 62    3.614151954650879
+Model_updated
+train_loss_epoch: 63    0.0026423886884003878
+in_validation
+val_loss_epoch: 63    3.6036784648895264
+Model_updated
+train_loss_epoch: 64    0.002440543146803975
+in_validation
+val_loss_epoch: 64    3.5930721759796143
+Model_updated
+train_loss_epoch: 65    0.0024315230548381805
+in_validation
+val_loss_epoch: 65    3.5817222595214844
+Model_updated
+train_loss_epoch: 66    0.002423712518066168
+in_validation
+val_loss_epoch: 66    3.568934202194214
+Model_updated
+train_loss_epoch: 67    0.00263477792032063
+in_validation
+val_loss_epoch: 67    3.5579917430877686
+Model_updated
+train_loss_epoch: 68    0.0026037816423922777
+in_validation
+val_loss_epoch: 68    3.546074151992798
+Model_updated
+train_loss_epoch: 69    0.002545106690376997
+in_validation
+val_loss_epoch: 69    3.5347206592559814
+Model_updated
+train_loss_epoch: 70    0.002413129899650812
+in_validation
+val_loss_epoch: 70    3.5228111743927
+Model_updated
+train_loss_epoch: 71    0.0025608655996620655
+in_validation
+val_loss_epoch: 71    3.5101892948150635
+Model_updated
+train_loss_epoch: 72    0.0025466191582381725
+in_validation
+val_loss_epoch: 72    3.4994912147521973
+Model_updated
+train_loss_epoch: 73    0.0022874712012708187
+in_validation
+val_loss_epoch: 73    3.4869322776794434
+Model_updated
+train_loss_epoch: 74    0.002434797352179885
+in_validation
+val_loss_epoch: 74    3.474841594696045
+Model_updated
+train_loss_epoch: 75    0.002407507039606571
+in_validation
+val_loss_epoch: 75    3.4634511470794678
+Model_updated
+train_loss_epoch: 76    0.0023275690618902445
+in_validation
+val_loss_epoch: 76    3.450011968612671
+Model_updated
+train_loss_epoch: 77    0.0024804892018437386
+in_validation
+val_loss_epoch: 77    3.4379818439483643
+Model_updated
+train_loss_epoch: 78    0.002401345642283559
+in_validation
+val_loss_epoch: 78    3.4248764514923096
+Model_updated
+train_loss_epoch: 79    0.0023525282740592957
+in_validation
+val_loss_epoch: 79    3.412184000015259
+Model_updated
+train_loss_epoch: 80    0.002326727844774723
+in_validation
+val_loss_epoch: 80    3.399242877960205
+Model_updated
+train_loss_epoch: 81    0.0023859874345362186
+in_validation
+val_loss_epoch: 81    3.3861191272735596
+Model_updated
+train_loss_epoch: 82    0.00235728663392365
+in_validation
+val_loss_epoch: 82    3.3733015060424805
+Model_updated
+train_loss_epoch: 83    0.002334000077098608
+in_validation
+val_loss_epoch: 83    3.361870288848877
+Model_updated
+train_loss_epoch: 84    0.0026500618550926447
+in_validation
+val_loss_epoch: 84    3.350303888320923
+Model_updated
+train_loss_epoch: 85    0.002363894134759903
+in_validation
+val_loss_epoch: 85    3.339756965637207
+Model_updated
+train_loss_epoch: 86    0.0025647650472819805
+in_validation
+val_loss_epoch: 86    3.3283557891845703
+Model_updated
+train_loss_epoch: 87    0.002491723746061325
+in_validation
+val_loss_epoch: 87    3.316642999649048
+Model_updated
+train_loss_epoch: 88    0.002400803379714489
+in_validation
+val_loss_epoch: 88    3.3052265644073486
+Model_updated
+train_loss_epoch: 89    0.002364277606830001
+in_validation
+val_loss_epoch: 89    3.294320583343506
+Model_updated
+train_loss_epoch: 90    0.002274740720167756
+in_validation
+val_loss_epoch: 90    3.282682418823242
+Model_updated
+train_loss_epoch: 91    0.0021886874455958605
+in_validation
+val_loss_epoch: 91    3.2715070247650146
+Model_updated
+train_loss_epoch: 92    0.002401547972112894
+in_validation
+val_loss_epoch: 92    3.260643482208252
+Model_updated
+train_loss_epoch: 93    0.0023067062720656395
+in_validation
+val_loss_epoch: 93    3.250868797302246
+Model_updated
+train_loss_epoch: 94    0.00234489468857646
+in_validation
+val_loss_epoch: 94    3.240844249725342
+Model_updated
+train_loss_epoch: 95    0.0025786396581679583
+in_validation
+val_loss_epoch: 95    3.2311580181121826
+Model_updated
+train_loss_epoch: 96    0.0021478391718119383
+in_validation
+val_loss_epoch: 96    3.22213077545166
+Model_updated
+train_loss_epoch: 97    0.0022352549713104963
+in_validation
+val_loss_epoch: 97    3.213240623474121
+Model_updated
+train_loss_epoch: 98    0.0024187408853322268
+in_validation
+val_loss_epoch: 98    3.2032735347747803
+Model_updated
+train_loss_epoch: 99    0.002367036882787943
+in_validation
+val_loss_epoch: 99    3.193850040435791
+Model_updated
+train_loss_epoch: 100    0.002271203324198723
+in_validation
+val_loss_epoch: 100    3.1838009357452393
+Model_updated
+train_loss_epoch: 101    0.002224972704425454
+in_validation
+val_loss_epoch: 101    3.1738553047180176
+Model_updated
+train_loss_epoch: 102    0.002145214471966028
+in_validation
+val_loss_epoch: 102    3.1648178100585938
+Model_updated
+train_loss_epoch: 103    0.00216331472620368
+in_validation
+val_loss_epoch: 103    3.156690835952759
+Model_updated
+train_loss_epoch: 104    0.0021769744344055653
+in_validation
+val_loss_epoch: 104    3.1485612392425537
+Model_updated
+train_loss_epoch: 105    0.002089968416839838
+in_validation
+val_loss_epoch: 105    3.139788866043091
+Model_updated
+train_loss_epoch: 106    0.002305129775777459
+in_validation
+val_loss_epoch: 106    3.131204128265381
+Model_updated
+train_loss_epoch: 107    0.0021133930422365665
+in_validation
+val_loss_epoch: 107    3.1225266456604004
+Model_updated
+train_loss_epoch: 108    0.002184715121984482
+in_validation
+val_loss_epoch: 108    3.1143312454223633
+Model_updated
+train_loss_epoch: 109    0.002298578852787614
+in_validation
+val_loss_epoch: 109    3.1052052974700928
+Model_updated
+train_loss_epoch: 110    0.002008708193898201
+in_validation
+val_loss_epoch: 110    3.0969626903533936
+Model_updated
+train_loss_epoch: 111    0.002008098643273115
+in_validation
+val_loss_epoch: 111    3.0898284912109375
+Model_updated
+train_loss_epoch: 112    0.002349888440221548
+in_validation
+val_loss_epoch: 112    3.0807459354400635
+Model_updated
+train_loss_epoch: 113    0.0020498496014624834
+in_validation
+val_loss_epoch: 113    3.07244610786438
+Model_updated
+train_loss_epoch: 114    0.002201880794018507
+in_validation
+val_loss_epoch: 114    3.0628697872161865
+Model_updated
+train_loss_epoch: 115    0.002244233852252364
+in_validation
+val_loss_epoch: 115    3.0556273460388184
+Model_updated
+train_loss_epoch: 116    0.002372459042817354
+in_validation
+val_loss_epoch: 116    3.046581268310547
+Model_updated
+train_loss_epoch: 117    0.002018224447965622
+in_validation
+val_loss_epoch: 117    3.0383896827697754
+Model_updated
+train_loss_epoch: 118    0.0020746865775436163
+in_validation
+val_loss_epoch: 118    3.031132459640503
+Model_updated
+train_loss_epoch: 119    0.002041599480435252
+in_validation
+val_loss_epoch: 119    3.023261070251465
+Model_updated
+train_loss_epoch: 120    0.0021909470669925213
+in_validation
+val_loss_epoch: 120    3.0149893760681152
+Model_updated
+train_loss_epoch: 121    0.0020116749219596386
+in_validation
+val_loss_epoch: 121    3.0064852237701416
+Model_updated
+train_loss_epoch: 122    0.002100797602906823
+in_validation
+val_loss_epoch: 122    2.998222827911377
+Model_updated
+train_loss_epoch: 123    0.002228895667940378
+in_validation
+val_loss_epoch: 123    2.990393877029419
+Model_updated
+train_loss_epoch: 124    0.002117208205163479
+in_validation
+val_loss_epoch: 124    2.982405424118042
+Model_updated
+train_loss_epoch: 125    0.002166433958336711
+in_validation
+val_loss_epoch: 125    2.9745371341705322
+Model_updated
+train_loss_epoch: 126    0.0020541383419185877
+in_validation
+val_loss_epoch: 126    2.966801404953003
+Model_updated
+train_loss_epoch: 127    0.0019024376524612308
+in_validation
+val_loss_epoch: 127    2.958836555480957
+Model_updated
+train_loss_epoch: 128    0.001982128480449319
+in_validation
+val_loss_epoch: 128    2.950083017349243
+Model_updated
+train_loss_epoch: 129    0.0019817990250885487
+in_validation
+val_loss_epoch: 129    2.9397852420806885
+Model_updated
+train_loss_epoch: 130    0.002028685063123703
+in_validation
+val_loss_epoch: 130    2.9321300983428955
+Model_updated
+train_loss_epoch: 131    0.0019014697754755616
+in_validation
+val_loss_epoch: 131    2.9233641624450684
+Model_updated
+train_loss_epoch: 132    0.001980558503419161
+in_validation
+val_loss_epoch: 132    2.917376756668091
+Model_updated
+train_loss_epoch: 133    0.0019330143695697188
+in_validation
+val_loss_epoch: 133    2.909733295440674
+Model_updated
+train_loss_epoch: 134    0.002010136377066374
+in_validation
+val_loss_epoch: 134    2.9016900062561035
+Model_updated
+train_loss_epoch: 135    0.002071509137749672
+in_validation
+val_loss_epoch: 135    2.893864154815674
+Model_updated
+train_loss_epoch: 136    0.0017902356339618564
+in_validation
+val_loss_epoch: 136    2.886465072631836
+Model_updated
+train_loss_epoch: 137    0.002007078379392624
+in_validation
+val_loss_epoch: 137    2.877413749694824
+Model_updated
+train_loss_epoch: 138    0.0018207327229902148
+in_validation
+val_loss_epoch: 138    2.869638681411743
+Model_updated
+train_loss_epoch: 139    0.002118825912475586
+in_validation
+val_loss_epoch: 139    2.858247995376587
+Model_updated
+train_loss_epoch: 140    0.0019447056110948324
+in_validation
+val_loss_epoch: 140    2.8484644889831543
+Model_updated
+train_loss_epoch: 141    0.0019777866546064615
+in_validation
+val_loss_epoch: 141    2.840100049972534
+Model_updated
+train_loss_epoch: 142    0.0017985317390412092
+in_validation
+val_loss_epoch: 142    2.8312604427337646
+Model_updated
+train_loss_epoch: 143    0.002096711890771985
+in_validation
+val_loss_epoch: 143    2.821288585662842
+Model_updated
+train_loss_epoch: 144    0.0019250655313953757
+in_validation
+val_loss_epoch: 144    2.811788558959961
+Model_updated
+train_loss_epoch: 145    0.0018734302138909698
+in_validation
+val_loss_epoch: 145    2.802398920059204
+Model_updated
+train_loss_epoch: 146    0.0020021027885377407
+in_validation
+val_loss_epoch: 146    2.7926101684570312
+Model_updated
+train_loss_epoch: 147    0.0019198410445824265
+in_validation
+val_loss_epoch: 147    2.7828738689422607
+Model_updated
+train_loss_epoch: 148    0.0019887383095920086
+in_validation
+val_loss_epoch: 148    2.769583225250244
+Model_updated
+train_loss_epoch: 149    0.00168855010997504
+in_validation
+val_loss_epoch: 149    2.7595741748809814
+Model_updated
+train_loss_epoch: 150    0.0017847968265414238
+in_validation
+val_loss_epoch: 150    2.7473180294036865
+Model_updated
+train_loss_epoch: 151    0.001735019963234663
+in_validation
+val_loss_epoch: 151    2.736541509628296
+Model_updated
+train_loss_epoch: 152    0.00179183145519346
+in_validation
+val_loss_epoch: 152    2.7262990474700928
+Model_updated
+train_loss_epoch: 153    0.0019767603371292353
+in_validation
+val_loss_epoch: 153    2.7156150341033936
+Model_updated
+train_loss_epoch: 154    0.0017678688745945692
+in_validation
+val_loss_epoch: 154    2.708742618560791
+Model_updated
+train_loss_epoch: 155    0.0018276728224009275
+in_validation
+val_loss_epoch: 155    2.6951510906219482
+Model_updated
+train_loss_epoch: 156    0.0017466212157160044
+in_validation
+val_loss_epoch: 156    2.6830058097839355
+Model_updated
+train_loss_epoch: 157    0.0017699473537504673
+in_validation
+val_loss_epoch: 157    2.6741199493408203
+Model_updated
+train_loss_epoch: 158    0.001657051150687039
+in_validation
+val_loss_epoch: 158    2.658477783203125
+Model_updated
+train_loss_epoch: 159    0.0018834731308743358
+in_validation
+val_loss_epoch: 159    2.6466071605682373
+Model_updated
+train_loss_epoch: 160    0.0018695957260206342
+in_validation
+val_loss_epoch: 160    2.6357100009918213
+Model_updated
+train_loss_epoch: 161    0.0017768527613952756
+in_validation
+val_loss_epoch: 161    2.6197097301483154
+Model_updated
+train_loss_epoch: 162    0.0018788737943395972
+in_validation
+val_loss_epoch: 162    2.609177350997925
+Model_updated
+train_loss_epoch: 163    0.0020107359159737825
+in_validation
+val_loss_epoch: 163    2.5964431762695312
+Model_updated
+train_loss_epoch: 164    0.001869673142209649
+in_validation
+val_loss_epoch: 164    2.584627151489258
+Model_updated
+train_loss_epoch: 165    0.0017698755254969
+in_validation
+val_loss_epoch: 165    2.5702741146087646
+Model_updated
+train_loss_epoch: 166    0.001657394808717072
+in_validation
+val_loss_epoch: 166    2.555431842803955
+Model_updated
+train_loss_epoch: 167    0.0016723861917853355
+in_validation
+val_loss_epoch: 167    2.5437097549438477
+Model_updated
+train_loss_epoch: 168    0.0018478267593309283
+in_validation
+val_loss_epoch: 168    2.526799201965332
+Model_updated
+train_loss_epoch: 169    0.0019501218339428306
+in_validation
+val_loss_epoch: 169    2.5125510692596436
+Model_updated
+train_loss_epoch: 170    0.0018324730917811394
+in_validation
+val_loss_epoch: 170    2.507380723953247
+Model_updated
+train_loss_epoch: 171    0.0017640399746596813
+in_validation
+val_loss_epoch: 171    2.4883499145507812
+Model_updated
+train_loss_epoch: 172    0.0018237807089462876
+in_validation
+val_loss_epoch: 172    2.4778387546539307
+Model_updated
+train_loss_epoch: 173    0.0017120830016210675
+in_validation
+val_loss_epoch: 173    2.459998846054077
+Model_updated
+train_loss_epoch: 174    0.0018272012239322066
+in_validation
+val_loss_epoch: 174    2.4533164501190186
+Model_updated
+train_loss_epoch: 175    0.0017306271474808455
+in_validation
+val_loss_epoch: 175    2.4458484649658203
+Model_updated
+train_loss_epoch: 176    0.0017192652449011803
+in_validation
+val_loss_epoch: 176    2.42795467376709
+Model_updated
+train_loss_epoch: 177    0.0016426953952759504
+in_validation
+val_loss_epoch: 177    2.4229092597961426
+Model_updated
+train_loss_epoch: 178    0.001749389455653727
+in_validation
+val_loss_epoch: 178    2.4196205139160156
+Model_updated
+train_loss_epoch: 179    0.0016004114877432585
+in_validation
+val_loss_epoch: 179    2.4026474952697754
+Model_updated
+train_loss_epoch: 180    0.001842184690758586
+in_validation
+val_loss_epoch: 180    2.3950672149658203
+Model_updated
+train_loss_epoch: 181    0.0016492475988343358
+in_validation
+val_loss_epoch: 181    2.380706548690796
+Model_updated
+train_loss_epoch: 182    0.0015036860713735223
+in_validation
+val_loss_epoch: 182    2.379899263381958
+Model_updated
+train_loss_epoch: 183    0.0017521859845146537
+in_validation
+val_loss_epoch: 183    2.370661497116089
+Model_updated
+train_loss_epoch: 184    0.0015919837169349194
+in_validation
+val_loss_epoch: 184    2.352297067642212
+Model_updated
+train_loss_epoch: 185    0.001562234596349299
+in_validation
+val_loss_epoch: 185    2.3469552993774414
+Model_updated
+train_loss_epoch: 186    0.001465530600398779
+in_validation
+val_loss_epoch: 186    2.3405869007110596
+Model_updated
+train_loss_epoch: 187    0.0015868534101173282
+in_validation
+val_loss_epoch: 187    2.3292529582977295
+Model_updated
+train_loss_epoch: 188    0.0015919114230200648
+in_validation
+val_loss_epoch: 188    2.3169808387756348
+Model_updated
+train_loss_epoch: 189    0.0016875033034011722
+in_validation
+val_loss_epoch: 189    2.308138132095337
+Model_updated
+train_loss_epoch: 190    0.0015133098931983113
+in_validation
+val_loss_epoch: 190    2.2990031242370605
+Model_updated
+train_loss_epoch: 191    0.001617161906324327
+in_validation
+val_loss_epoch: 191    2.2999215126037598
+train_loss_epoch: 192    0.0015909745125100017
+in_validation
+val_loss_epoch: 192    2.2884702682495117
+Model_updated
+train_loss_epoch: 193    0.0014251716202124953
+in_validation
+val_loss_epoch: 193    2.286220073699951
+Model_updated
+train_loss_epoch: 194    0.0014853784814476967
+in_validation
+val_loss_epoch: 194    2.280449628829956
+Model_updated
+train_loss_epoch: 195    0.0016655806684866548
+in_validation
+val_loss_epoch: 195    2.272777795791626
+Model_updated
+train_loss_epoch: 196    0.0014518196694552898
+in_validation
+val_loss_epoch: 196    2.2642641067504883
+Model_updated
+train_loss_epoch: 197    0.00160789187066257
+in_validation
+val_loss_epoch: 197    2.2575080394744873
+Model_updated
+train_loss_epoch: 198    0.001521706348285079
+in_validation
+val_loss_epoch: 198    2.2559714317321777
+Model_updated
+train_loss_epoch: 199    0.0016256795497611165
+in_validation
+val_loss_epoch: 199    2.2534751892089844
+Model_updated
+train_loss_epoch: 200    0.001722864923067391
+in_validation
+val_loss_epoch: 200    2.243957281112671
+Model_updated
+train_loss_epoch: 201    0.0015042009763419628
+in_validation
+val_loss_epoch: 201    2.2317066192626953
+Model_updated
+train_loss_epoch: 202    0.0015814123908057809
+in_validation
+val_loss_epoch: 202    2.2252447605133057
+Model_updated
+train_loss_epoch: 203    0.0016093819867819548
+in_validation
+val_loss_epoch: 203    2.228548288345337
+train_loss_epoch: 204    0.001599026727490127
+in_validation
+val_loss_epoch: 204    2.21785569190979
+Model_updated
+train_loss_epoch: 205    0.0016290720086544752
+in_validation
+val_loss_epoch: 205    2.209501028060913
+Model_updated
+train_loss_epoch: 206    0.001636476838029921
+in_validation
+val_loss_epoch: 206    2.207841634750366
+Model_updated
+train_loss_epoch: 207    0.0016178875230252743
+in_validation
+val_loss_epoch: 207    2.2033708095550537
+Model_updated
+train_loss_epoch: 208    0.0015443883603438735
+in_validation
+val_loss_epoch: 208    2.2039928436279297
+train_loss_epoch: 209    0.0015406928723677993
+in_validation
+val_loss_epoch: 209    2.19857120513916
+Model_updated
+train_loss_epoch: 210    0.0016831305110827088
+in_validation
+val_loss_epoch: 210    2.193924903869629
+Model_updated
+train_loss_epoch: 211    0.0015370890032500029
+in_validation
+val_loss_epoch: 211    2.18855357170105
+Model_updated
+train_loss_epoch: 212    0.001508629065938294
+in_validation
+val_loss_epoch: 212    2.185222625732422
+Model_updated
+train_loss_epoch: 213    0.0016651327023282647
+in_validation
+val_loss_epoch: 213    2.1800241470336914
+Model_updated
+train_loss_epoch: 214    0.0015218349872156978
+in_validation
+val_loss_epoch: 214    2.1704609394073486
+Model_updated
+train_loss_epoch: 215    0.0015720333904027939
+in_validation
+val_loss_epoch: 215    2.1774797439575195
+train_loss_epoch: 216    0.0015323199331760406
+in_validation
+val_loss_epoch: 216    2.167593002319336
+Model_updated
+train_loss_epoch: 217    0.0016018470050767064
+in_validation
+val_loss_epoch: 217    2.161957263946533
+Model_updated
+train_loss_epoch: 218    0.0014960955595597625
+in_validation
+val_loss_epoch: 218    2.160029411315918
+Model_updated
+train_loss_epoch: 219    0.0014349763514474034
+in_validation
+val_loss_epoch: 219    2.1523094177246094
+Model_updated
+train_loss_epoch: 220    0.0015658268239349127
+in_validation
+val_loss_epoch: 220    2.144291877746582
+Model_updated
+train_loss_epoch: 221    0.0017388834385201335
+in_validation
+val_loss_epoch: 221    2.1439731121063232
+Model_updated
+train_loss_epoch: 222    0.0014343536458909512
+in_validation
+val_loss_epoch: 222    2.139505624771118
+Model_updated
+train_loss_epoch: 223    0.0014501673867926002
+in_validation
+val_loss_epoch: 223    2.1401798725128174
+train_loss_epoch: 224    0.0015260957879945636
+in_validation
+val_loss_epoch: 224    2.135667324066162
+Model_updated
+train_loss_epoch: 225    0.001528286375105381
+in_validation
+val_loss_epoch: 225    2.1311838626861572
+Model_updated
+train_loss_epoch: 226    0.0014310094993561506
+in_validation
+val_loss_epoch: 226    2.1276919841766357
+Model_updated
+train_loss_epoch: 227    0.001418419647961855
+in_validation
+val_loss_epoch: 227    2.126680374145508
+Model_updated
+train_loss_epoch: 228    0.0016171254683285952
+in_validation
+val_loss_epoch: 228    2.1223702430725098
+Model_updated
+train_loss_epoch: 229    0.0015317538054659963
+in_validation
+val_loss_epoch: 229    2.1194894313812256
+Model_updated
+train_loss_epoch: 230    0.001456199330277741
+in_validation
+val_loss_epoch: 230    2.1170003414154053
+Model_updated
+train_loss_epoch: 231    0.0015254020690917969
+in_validation
+val_loss_epoch: 231    2.1112020015716553
+Model_updated
+train_loss_epoch: 232    0.0014659787993878126
+in_validation
+val_loss_epoch: 232    2.1107895374298096
+Model_updated
+train_loss_epoch: 233    0.0014692010590806603
+in_validation
+val_loss_epoch: 233    2.110161304473877
+Model_updated
+train_loss_epoch: 234    0.0016520804492756724
+in_validation
+val_loss_epoch: 234    2.1077980995178223
+Model_updated
+train_loss_epoch: 235    0.0015823431313037872
+in_validation
+val_loss_epoch: 235    2.1038014888763428
+Model_updated
+train_loss_epoch: 236    0.001539939665235579
+in_validation
+val_loss_epoch: 236    2.1023154258728027
+Model_updated
+train_loss_epoch: 237    0.001424058573320508
+in_validation
+val_loss_epoch: 237    2.1027560234069824
+train_loss_epoch: 238    0.001535892835818231
+in_validation
+val_loss_epoch: 238    2.0994980335235596
+Model_updated
+train_loss_epoch: 239    0.0015819781692698598
+in_validation
+val_loss_epoch: 239    2.0976314544677734
+Model_updated
+train_loss_epoch: 240    0.0014274908462539315
+in_validation
+val_loss_epoch: 240    2.095459222793579
+Model_updated
+train_loss_epoch: 241    0.0014508427120745182
+in_validation
+val_loss_epoch: 241    2.0932254791259766
+Model_updated
+train_loss_epoch: 242    0.0014794017188251019
+in_validation
+val_loss_epoch: 242    2.090925693511963
+Model_updated
+train_loss_epoch: 243    0.0015333323972299695
+in_validation
+val_loss_epoch: 243    2.0901355743408203
+Model_updated
+train_loss_epoch: 244    0.0014740993501618505
+in_validation
+val_loss_epoch: 244    2.088732957839966
+Model_updated
+train_loss_epoch: 245    0.0014785249950364232
+in_validation
+val_loss_epoch: 245    2.084801435470581
+Model_updated
+train_loss_epoch: 246    0.0014256802387535572
+in_validation
+val_loss_epoch: 246    2.082923412322998
+Model_updated
+train_loss_epoch: 247    0.001304549747146666
+in_validation
+val_loss_epoch: 247    2.08088755607605
+Model_updated
+train_loss_epoch: 248    0.0015311551978811622
+in_validation
+val_loss_epoch: 248    2.0792574882507324
+Model_updated
+train_loss_epoch: 249    0.0015567472437396646
+in_validation
+val_loss_epoch: 249    2.078524112701416
+Model_updated
+train_loss_epoch: 250    0.0015005834866315126
+in_validation
+val_loss_epoch: 250    2.077145576477051
+Model_updated
+train_loss_epoch: 251    0.0012248922139406204
+in_validation
+val_loss_epoch: 251    2.074976682662964
+Model_updated
+train_loss_epoch: 252    0.001437146682292223
+in_validation
+val_loss_epoch: 252    2.0732245445251465
+Model_updated
+train_loss_epoch: 253    0.0015900230500847101
+in_validation
+val_loss_epoch: 253    2.0709316730499268
+Model_updated
+train_loss_epoch: 254    0.001582966884598136
+in_validation
+val_loss_epoch: 254    2.0698115825653076
+Model_updated
+train_loss_epoch: 255    0.0013734973035752773
+in_validation
+val_loss_epoch: 255    2.0694799423217773
+Model_updated
+train_loss_epoch: 256    0.0014053777558729053
+in_validation
+val_loss_epoch: 256    2.066831588745117
+Model_updated
+train_loss_epoch: 257    0.0015048787463456392
+in_validation
+val_loss_epoch: 257    2.0658938884735107
+Model_updated
+train_loss_epoch: 258    0.0012664471287280321
+in_validation
+val_loss_epoch: 258    2.0639994144439697
+Model_updated
+train_loss_epoch: 259    0.0015442072181031108
+in_validation
+val_loss_epoch: 259    2.063004732131958
+Model_updated
+train_loss_epoch: 260    0.001419132691808045
+in_validation
+val_loss_epoch: 260    2.060771942138672
+Model_updated
+train_loss_epoch: 261    0.0014836760237812996
+in_validation
+val_loss_epoch: 261    2.0588393211364746
+Model_updated
+train_loss_epoch: 262    0.0016626976430416107
+in_validation
+val_loss_epoch: 262    2.057342529296875
+Model_updated
+train_loss_epoch: 263    0.0015398877440020442
+in_validation
+val_loss_epoch: 263    2.0561113357543945
+Model_updated
+train_loss_epoch: 264    0.0015310380840674043
+in_validation
+val_loss_epoch: 264    2.053570032119751
+Model_updated
+train_loss_epoch: 265    0.0013098868075758219
+in_validation
+val_loss_epoch: 265    2.0521769523620605
+Model_updated
+train_loss_epoch: 266    0.0013726974138990045
+in_validation
+val_loss_epoch: 266    2.0501656532287598
+Model_updated
+train_loss_epoch: 267    0.0015916164265945554
+in_validation
+val_loss_epoch: 267    2.0486323833465576
+Model_updated
+train_loss_epoch: 268    0.0013673240318894386
+in_validation
+val_loss_epoch: 268    2.047377824783325
+Model_updated
+train_loss_epoch: 269    0.0016197358490899205
+in_validation
+val_loss_epoch: 269    2.0461041927337646
+Model_updated
+train_loss_epoch: 270    0.0015562936896458268
+in_validation
+val_loss_epoch: 270    2.045027494430542
+Model_updated
+train_loss_epoch: 271    0.0014619968133047223
+in_validation
+val_loss_epoch: 271    2.044473886489868
+Model_updated
+train_loss_epoch: 272    0.0015574516728520393
+in_validation
+val_loss_epoch: 272    2.0439116954803467
+Model_updated
+train_loss_epoch: 273    0.0014859959483146667
+in_validation
+val_loss_epoch: 273    2.0428805351257324
+Model_updated
+train_loss_epoch: 274    0.0013905728701502085
+in_validation
+val_loss_epoch: 274    2.041130542755127
+Model_updated
+train_loss_epoch: 275    0.001353534054942429
+in_validation
+val_loss_epoch: 275    2.039461374282837
+Model_updated
+train_loss_epoch: 276    0.0014577079564332962
+in_validation
+val_loss_epoch: 276    2.0385243892669678
+Model_updated
+train_loss_epoch: 277    0.00140897196251899
+in_validation
+val_loss_epoch: 277    2.0378425121307373
+Model_updated
+train_loss_epoch: 278    0.0014321227790787816
+in_validation
+val_loss_epoch: 278    2.0365588665008545
+Model_updated
+train_loss_epoch: 279    0.0014542007120326161
+in_validation
+val_loss_epoch: 279    2.0353901386260986
+Model_updated
+train_loss_epoch: 280    0.0013874658616259694
+in_validation
+val_loss_epoch: 280    2.034475088119507
+Model_updated
+train_loss_epoch: 281    0.0014265297213569283
+in_validation
+val_loss_epoch: 281    2.0340964794158936
+Model_updated
+train_loss_epoch: 282    0.0013983158860355616
+in_validation
+val_loss_epoch: 282    2.033965826034546
+Model_updated
+train_loss_epoch: 283    0.0015108619118109345
+in_validation
+val_loss_epoch: 283    2.0327253341674805
+Model_updated
+train_loss_epoch: 284    0.0015553062548860908
+in_validation
+val_loss_epoch: 284    2.0303256511688232
+Model_updated
+train_loss_epoch: 285    0.0013461142079904675
+in_validation
+val_loss_epoch: 285    2.028996229171753
+Model_updated
+train_loss_epoch: 286    0.0015114651760086417
+in_validation
+val_loss_epoch: 286    2.0274972915649414
+Model_updated
+train_loss_epoch: 287    0.0013828756054863334
+in_validation
+val_loss_epoch: 287    2.0266425609588623
+Model_updated
+train_loss_epoch: 288    0.0013051291462033987
+in_validation
+val_loss_epoch: 288    2.0252952575683594
+Model_updated
+train_loss_epoch: 289    0.0014998216647654772
+in_validation
+val_loss_epoch: 289    2.0241849422454834
+Model_updated
+train_loss_epoch: 290    0.001540414523333311
+in_validation
+val_loss_epoch: 290    2.023705005645752
+Model_updated
+train_loss_epoch: 291    0.0013714097440242767
+in_validation
+val_loss_epoch: 291    2.022890567779541
+Model_updated
+train_loss_epoch: 292    0.0014142822474241257
+in_validation
+val_loss_epoch: 292    2.022846221923828
+Model_updated
+train_loss_epoch: 293    0.0013052234426140785
+in_validation
+val_loss_epoch: 293    2.02146577835083
+Model_updated
+train_loss_epoch: 294    0.0014733592979609966
+in_validation
+val_loss_epoch: 294    2.020648241043091
+Model_updated
+train_loss_epoch: 295    0.001382067333906889
+in_validation
+val_loss_epoch: 295    2.019657850265503
+Model_updated
+train_loss_epoch: 296    0.001443459652364254
+in_validation
+val_loss_epoch: 296    2.018890857696533
+Model_updated
+train_loss_epoch: 297    0.0014505229191854596
+in_validation
+val_loss_epoch: 297    2.018451690673828
+Model_updated
+train_loss_epoch: 298    0.0015380438417196274
+in_validation
+val_loss_epoch: 298    2.0172669887542725
+Model_updated
+train_loss_epoch: 299    0.0015498343855142593
+in_validation
+val_loss_epoch: 299    2.0162465572357178
+Model_updated
+train_loss_epoch: 300    0.0013841649051755667
+in_validation
+val_loss_epoch: 300    2.0154383182525635
+Model_updated
+train_loss_epoch: 301    0.0013152725296095014
+in_validation
+val_loss_epoch: 301    2.014789581298828
+Model_updated
+train_loss_epoch: 302    0.0015645879320800304
+in_validation
+val_loss_epoch: 302    2.013622283935547
+Model_updated
+train_loss_epoch: 303    0.0014317581662908196
+in_validation
+val_loss_epoch: 303    2.0128867626190186
+Model_updated
+train_loss_epoch: 304    0.0016352128004655242
+in_validation
+val_loss_epoch: 304    2.012258768081665
+Model_updated
+train_loss_epoch: 305    0.0015544095076620579
+in_validation
+val_loss_epoch: 305    2.0115671157836914
+Model_updated
+train_loss_epoch: 306    0.0014792927540838718
+in_validation
+val_loss_epoch: 306    2.01039981842041
+Model_updated
+train_loss_epoch: 307    0.0015134911518543959
+in_validation
+val_loss_epoch: 307    2.011246919631958
+train_loss_epoch: 308    0.001386867486871779
+in_validation
+val_loss_epoch: 308    2.010106325149536
+Model_updated
+train_loss_epoch: 309    0.0013758937129750848
+in_validation
+val_loss_epoch: 309    2.0083889961242676
+Model_updated
+train_loss_epoch: 310    0.0012716008350253105
+in_validation
+val_loss_epoch: 310    2.007718563079834
+Model_updated
+train_loss_epoch: 311    0.0013188014272600412
+in_validation
+val_loss_epoch: 311    2.0060176849365234
+Model_updated
+train_loss_epoch: 312    0.0013885546941310167
+in_validation
+val_loss_epoch: 312    2.0055181980133057
+Model_updated
+train_loss_epoch: 313    0.0014316568849608302
+in_validation
+val_loss_epoch: 313    2.0036442279815674
+Model_updated
+train_loss_epoch: 314    0.0013233188074082136
+in_validation
+val_loss_epoch: 314    2.003192186355591
+Model_updated
+train_loss_epoch: 315    0.0013709518825635314
+in_validation
+val_loss_epoch: 315    2.0023293495178223
+Model_updated
+train_loss_epoch: 316    0.0012606424279510975
+in_validation
+val_loss_epoch: 316    2.002052068710327
+Model_updated
+train_loss_epoch: 317    0.0013015309814363718
+in_validation
+val_loss_epoch: 317    2.001157522201538
+Model_updated
+train_loss_epoch: 318    0.0014506647130474448
+in_validation
+val_loss_epoch: 318    1.9995479583740234
+Model_updated
+train_loss_epoch: 319    0.0015945385675877333
+in_validation
+val_loss_epoch: 319    1.999107003211975
+Model_updated
+train_loss_epoch: 320    0.0014795003226026893
+in_validation
+val_loss_epoch: 320    1.9988124370574951
+Model_updated
+train_loss_epoch: 321    0.00142298499122262
+in_validation
+val_loss_epoch: 321    1.9978675842285156
+Model_updated
+train_loss_epoch: 322    0.001263744430616498
+in_validation
+val_loss_epoch: 322    1.9972349405288696
+Model_updated
+train_loss_epoch: 323    0.0013278255937620997
+in_validation
+val_loss_epoch: 323    1.996677041053772
+Model_updated
+train_loss_epoch: 324    0.0013918597251176834
+in_validation
+val_loss_epoch: 324    1.9958707094192505
+Model_updated
+train_loss_epoch: 325    0.001260235090740025
+in_validation
+val_loss_epoch: 325    1.996140956878662
+train_loss_epoch: 326    0.0013970283325761557
+in_validation
+val_loss_epoch: 326    1.9953852891921997
+Model_updated
+train_loss_epoch: 327    0.001301974756643176
+in_validation
+val_loss_epoch: 327    1.994870662689209
+Model_updated
+train_loss_epoch: 328    0.0014711471740156412
+in_validation
+val_loss_epoch: 328    1.9939333200454712
+Model_updated
+train_loss_epoch: 329    0.0013203362468630075
+in_validation
+val_loss_epoch: 329    1.9935810565948486
+Model_updated
+train_loss_epoch: 330    0.0015080238226801157
+in_validation
+val_loss_epoch: 330    1.992965817451477
+Model_updated
+train_loss_epoch: 331    0.0015245021786540747
+in_validation
+val_loss_epoch: 331    1.992122769355774
+Model_updated
+train_loss_epoch: 332    0.0014562727883458138
+in_validation
+val_loss_epoch: 332    1.9910075664520264
+Model_updated
+train_loss_epoch: 333    0.001377856475301087
+in_validation
+val_loss_epoch: 333    1.9900745153427124
+Model_updated
+train_loss_epoch: 334    0.0013464575167745352
+in_validation
+val_loss_epoch: 334    1.9895390272140503
+Model_updated
+train_loss_epoch: 335    0.001423121546395123
+in_validation
+val_loss_epoch: 335    1.988701343536377
+Model_updated
+train_loss_epoch: 336    0.0013874702854081988
+in_validation
+val_loss_epoch: 336    1.9877939224243164
+Model_updated
+train_loss_epoch: 337    0.001412673038430512
+in_validation
+val_loss_epoch: 337    1.9873638153076172
+Model_updated
+train_loss_epoch: 338    0.0015494832769036293
+in_validation
+val_loss_epoch: 338    1.9867831468582153
+Model_updated
+train_loss_epoch: 339    0.001443887478671968
+in_validation
+val_loss_epoch: 339    1.986487865447998
+Model_updated
+train_loss_epoch: 340    0.0014629475772380829
+in_validation
+val_loss_epoch: 340    1.9855660200119019
+Model_updated
+train_loss_epoch: 341    0.001327879959717393
+in_validation
+val_loss_epoch: 341    1.98469078540802
+Model_updated
+train_loss_epoch: 342    0.0013368293875828385
+in_validation
+val_loss_epoch: 342    1.9840015172958374
+Model_updated
+train_loss_epoch: 343    0.0014222745085135102
+in_validation
+val_loss_epoch: 343    1.9831461906433105
+Model_updated
+train_loss_epoch: 344    0.0012411401839926839
+in_validation
+val_loss_epoch: 344    1.984180212020874
+train_loss_epoch: 345    0.0014438104117289186
+in_validation
+val_loss_epoch: 345    1.9824720621109009
+Model_updated
+train_loss_epoch: 346    0.0014477013610303402
+in_validation
+val_loss_epoch: 346    1.9821159839630127
+Model_updated
+train_loss_epoch: 347    0.001520056976005435
+in_validation
+val_loss_epoch: 347    1.981402039527893
+Model_updated
+train_loss_epoch: 348    0.0012443994637578726
+in_validation
+val_loss_epoch: 348    1.980712890625
+Model_updated
+train_loss_epoch: 349    0.0013395174173638225
+in_validation
+val_loss_epoch: 349    1.9805958271026611
+Model_updated
+train_loss_epoch: 350    0.001390019548125565
+in_validation
+val_loss_epoch: 350    1.9806236028671265
+train_loss_epoch: 351    0.0014227824285626411
+in_validation

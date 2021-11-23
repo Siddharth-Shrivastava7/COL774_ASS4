@@ -1,5 +1,4 @@
 import torch
-from torch._C import dtype
 import torch.nn as nn
 import torchvision.models as models
 import torch.nn.functional as F
@@ -16,8 +15,11 @@ from torch.nn.utils.rnn import pack_padded_sequence
 from tqdm import tqdm 
 from torch.utils.data.sampler import SubsetRandomSampler
 import os 
+import math 
+from tensorboardX import SummaryWriter 
+from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
 
-os.environ["CUDA_VISIBLE_DEVICES"] = "1" 
+# os.environ["CUDA_VISIBLE_DEVICES"] = "1" 
 
 import nltk
 stopwords = nltk.corpus.stopwords.words('english') 
@@ -25,8 +27,9 @@ from nltk.stem import WordNetLemmatizer
 wordnet_lemmatizer = WordNetLemmatizer()
 
 
-import argparse 
+writer = SummaryWriter() 
 
+import argparse 
 parser = argparse.ArgumentParser() 
 '''
 complete the req args 
@@ -38,7 +41,6 @@ parser.add_argument('-imdirte', '--image_dir_test', default='/home/cse/phd/anz20
 parser.add_argument('-ms', '--model_save_path', default='/home/cse/phd/anz208849/assignments/COL774/ass4/non_comp.pth')
 
 args = parser.parse_args()
-
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
 
 
@@ -313,8 +315,8 @@ class ImageCaptionsNet(nn.Module):
         ## cnn encoder 
         feat = self.resnet(image_batch) 
         feat = feat.reshape(feat.size(0), -1) 
-        # feat = self.bn(self.linear(feat))  ## adding batch norm  
-        feat = self.linear(feat)    
+        feat = self.bn(self.linear(feat))  ## adding batch norm  
+        # feat = self.linear(feat)    
 
         # print(feat.shape)  # torch.Size([32, 256]) 
 
@@ -355,12 +357,25 @@ class ImageCaptionsNet(nn.Module):
 
 
 
-def sample_beam_search(features, states=None): 
-    pass 
+def beam_search_pred(model, image,  vocab_dict, beam_width=3, log=False): 
+    
+    
 
-def blue_score(refernec, candidate):  
-    pass 
+    pass  
 
+
+
+
+def blue_score(references, candidates, sentence = False):  
+    if sentence:
+        ## candidates: list of tokens
+        ## references: list of tokens (can be multiple for one doc)
+        score = sentence_bleu(references, candidates)  
+    else:
+        ## candidates: list of list of tokens
+        ## references: list of doc where each doc is a list of references which is list of tokens
+        score = corpus_bleu(references, candidates)  
+    return score
 
 
 if __name__ == '__main__': 
@@ -395,9 +410,10 @@ if __name__ == '__main__':
     # print(train_dataset)
 
     # Define your hyperparameters
-    NUMBER_OF_EPOCHS = 3
+    NUMBER_OF_EPOCHS = 3000
     LEARNING_RATE = 1e-1
-    BATCH_SIZE = 256 ## using gpu!!
+    BATCH_SIZE = 32
+    VAL_BATCH_SIZE = 1 
     NUM_WORKERS = 0 # Parallel threads for dataloading
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=LEARNING_RATE) 
@@ -410,7 +426,7 @@ if __name__ == '__main__':
     indices = list(range(dataset_size)) 
     split = int(np.floor(validation_split * dataset_size)) 
     shuffle_dataset = True
-    if shuffle_dataset :
+    if shuffle_dataset:
         np.random.seed(14)
         np.random.shuffle(indices)
     train_indices, val_indices = indices[split:], indices[:split]  
@@ -421,7 +437,7 @@ if __name__ == '__main__':
 
     train_loader = DataLoader(dataset, batch_size=BATCH_SIZE, 
                                             sampler=train_sampler, num_workers=NUM_WORKERS) 
-    val_loader = DataLoader(dataset, batch_size=BATCH_SIZE,
+    val_loader = DataLoader(dataset, batch_size=VAL_BATCH_SIZE,
                                                     sampler=valid_sampler, num_workers=NUM_WORKERS) 
  
     # Creating the DataLoader for batching purposes
@@ -430,14 +446,14 @@ if __name__ == '__main__':
     # print(train_loader)
 
     best_val_loss = np.inf 
-    val_check = 2
-    for epoch in tqdm(range(NUMBER_OF_EPOCHS)):
+    val_check = 1
+    for epoch in tqdm(range(NUMBER_OF_EPOCHS)): 
+        train_epoch_loss = 0
         for batch_idx, sample in tqdm(enumerate(train_loader)):
-            train_epoch_loss = 0
-            net.zero_grad()  
+            net.zero_grad() 
+            net.train() 
             image_batch, captions_batch = sample['image'], sample['captions']
-            # image_batch, captions_batch, lengths_batch = sample['image'], sample['captions'], sample['lengths'] 
-
+            # image_batch, captions_batch, lengths_batch = sample['image'], sample['captions'], sample['lengths']  
             # captions_batch = pack_padded_sequence(captions, lengths, batch_first=True, enforce_sorted =False)[0] 
 
             # If GPU training required
@@ -445,34 +461,56 @@ if __name__ == '__main__':
             image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
             # image_batch, captions_batch, lengths_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device), lengths_batch.to(device)
 
-            output_captions = net((image_batch, captions_batch)) 
+            output_captions = net((image_batch, captions_batch))  
+            # print(output_captions.shape)  
+            
+            # sample_beam_search(output_captions, beam_width=3)
+            # break
             # print(output_captions.shape) # torch.Size([32, 10, 1837])
             # output_captions = net((image_batch, captions_batch, lengths_batch)) 
             # print(captions_batch.shape) # torch.Size([32, 10])
             loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
             train_epoch_loss += loss
             loss.backward()
-            optimizer.step() 
+            optimizer.step()  
+
+            break
+
+            # writer.add_scalar('training iter loss', train_epoch_loss.item(), batch_idx)
+            
+            # print(train_epoch_loss)
+            # print(loss.item())  
+            # torch.save(net.state_dict(), args.model_save_path)  
+            # print('model_updated') 
+            # print(len(train_loader))
+
+        # break 
         train_epoch_loss /= len(train_loader)
-        print('train_loss_epoch:',train_epoch_loss, '  ', loss.item())
+        print('train_loss_epoch:',epoch, '  ', train_epoch_loss.item())
+        writer.add_scalar('training loss', train_epoch_loss.item(), epoch) 
 
         if epoch % val_check == 0: 
-            print('in_validation')
-            for val_sample in tqdm(val_loader):
+            with torch.no_grad():
+                net.eval()
                 val_epoch_loss = 0 
-                val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
-                val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
-                val_output_captions = net((val_image_batch, val_captions_batch))
-                val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
-                val_epoch_loss+=val_loss
-            val_epoch_loss /= len(val_loader)
-            print('val_loss_epoch:',epoch, '  ', loss.item())  
-            if val_loss < best_val_loss: 
-                best_val_loss = val_loss
-                torch.save(args.save(args.model_save_path)) 
-                print('Model_updated')
+                print('in_validation')
+                for val_sample in tqdm(val_loader):
+                    val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
+                    val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
+                    val_output_captions = net((val_image_batch, val_captions_batch))
+                    val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
+                    val_epoch_loss+=val_loss
+                val_epoch_loss /= len(val_loader) 
+                writer.add_scalar('validation loss', val_epoch_loss.item(), epoch)
+                print('val_loss_epoch:',epoch, '  ', val_epoch_loss.item())  
+                if val_epoch_loss < best_val_loss: 
+                    best_val_loss = val_epoch_loss 
+                    torch.save(net.state_dict(), args.model_save_path)
+                    print('Model_updated')
 
-    
+    writer.close() 
+
+
         # print("Epoch: " + str(epoch + 1))
 
 
