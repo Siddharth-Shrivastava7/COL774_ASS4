@@ -1,0 +1,8 @@
+train_loss_epoch: 0    0.23409932851791382
+in_validation
+val_loss_epoch: 0    0.0003246775013394654
+Model_updated
+train_loss_epoch: 1    0.00019065359083469957
+in_validation
+val_loss_epoch: 1    0.00015024538151919842
+Model_updated

@@ -74,8 +74,6 @@ class Rescale(object):
         # print(image)
         img = transform.resize(image, (new_h, new_w))  ## pixel value are between 0 and 1    
         # img = np.array(image.resize((new_w, new_h), Image.ANTIALIAS)) ## not standardising here
-        # print(img)
-        # print(img)  
         return img
 
 
@@ -89,9 +87,6 @@ class ToTensor(object):
         image = image.transpose((2, 0, 1))  
 
         image = torch.tensor(image)  
-
-        # print(image.shape)    
-        # print(image)
         return image
 
 
@@ -121,16 +116,10 @@ class CaptionsPreprocessing:
         captions_dict = {}
         with open(self.captions_file_path, 'r', encoding='utf-8') as f:
             for img_caption_line in f.readlines(): 
-                # print(img_caption_line) 
                 img_captions = img_caption_line.strip().split('\t') 
-                # print(img_captions[0])   
-                # print(img_captions[0].split('/')[-1])  
                 img_cap_path = os.path.join(args.image_dir_train, img_captions[0])   
-                # print(img_cap_path)
                 captions_dict[img_captions[0]] = img_captions[1]
-                # print(img_captions[0])
-                # break
-        # print(captions_dict)  
+
         return captions_dict
 
     def process_captions(self):
@@ -157,10 +146,6 @@ class CaptionsPreprocessing:
         for img_p, caption in captions_dict.items():  
     
             pad_len = max_len_cap - len(caption.split(' '))  
-            # print(pad_len)
-            # print(caption)
-            # print(max_len_cap) 
-
             caption =  '<st> ' + caption + ' <en>'  + pad_len * ' <pad>' ## padding for ensuring each caption is of same length
 
             captions_dict[img_p] = caption 
@@ -214,7 +199,6 @@ class CaptionsPreprocessing:
 
         # print(lookup_tensor)
         return lookup_tensor
-        # return torch.zeros(len(img_caption_list), 10)
 
 ## dataset class 
 
@@ -463,8 +447,6 @@ if __name__ == '__main__':
         np.random.seed(14)
         np.random.shuffle(indices)
     train_indices, val_indices = indices[split:], indices[:split]  
-    # print(len(train_indices)) 
-    # print(len(val_indices))
     train_sampler = SubsetRandomSampler(train_indices)
     valid_sampler = SubsetRandomSampler(val_indices)
 

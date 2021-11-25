@@ -38,10 +38,10 @@ parser = argparse.ArgumentParser()
 complete the req args 
 '''
 
-parser.add_argument('-tr', '--train_tsv_path', default='/home/cse/phd/anz208849/assignments/COL774/COL774_ASS4/Train_text.tsv') 
-parser.add_argument('-imdirtr', '--image_dir_train', default='/home/cse/phd/anz208849/assignments/COL774/ass4') 
-parser.add_argument('-imdirte', '--image_dir_test', default='/home/cse/phd/anz208849/assignments/COL774/ass4')  
-parser.add_argument('-ms', '--model_save_path', default='/home/cse/phd/anz208849/assignments/COL774/ass4/non_comp.pth')
+parser.add_argument('-tr', '--train_tsv_path', default='/home/sidd_s/assign/COL774_ASS4/Train_text.tsv') 
+parser.add_argument('-imdirtr', '--image_dir_train', default='/home/sidd_s/assign/data') 
+parser.add_argument('-imdirte', '--image_dir_test', default='/home/sidd_s/assign/data')  
+parser.add_argument('-ms', '--model_save_path', default='/home/sidd_s/assign/non_comp.pth')
 
 args = parser.parse_args()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
@@ -121,14 +121,10 @@ class CaptionsPreprocessing:
             for img_caption_line in f.readlines(): 
                 # print(img_caption_line) 
                 img_captions = img_caption_line.strip().split('\t') 
-                # print(img_captions[0])   
-                # print(img_captions[0].split('/')[-1])  
                 img_cap_path = os.path.join(args.image_dir_train, img_captions[0])   
                 # print(img_cap_path)
                 captions_dict[img_captions[0]] = img_captions[1]
-                # print(img_captions[0])
-                # break
-        # print(captions_dict)
+                
         return captions_dict
 
     def process_captions(self):
@@ -141,8 +137,6 @@ class CaptionsPreprocessing:
         ## complete the for preprocessing here 
 
         max_len_cap = 0 
-        # print(captions_dict)
-        ## max len caption find and save the value for making each caption of equal length 
         for caption in captions_dict.values(): 
             # print(caption)
             len_cap = len(caption.split(' '))  
@@ -167,8 +161,6 @@ class CaptionsPreprocessing:
             # print(caption) 
 
             pad_len = max_len_cap - len(caption.split(' '))  
-            # print(pad_len)
-            # print(caption)
 
             caption =  '<st> ' + caption + ' <en>'  + pad_len * ' <pad>' ## padding for ensuring each caption is of same length
 
@@ -217,21 +209,11 @@ class CaptionsPreprocessing:
         word_map = dict(zip(iter(vocab), range(len(vocab))))
         img_capt_lst_tensor = []
         
-        # print(word_map)
-        # print(img_caption_list)
-
-        ## word is a token 
-        # for caption in img_caption_list: 
-        #     # print(caption)
-
-        # lookup_tensor = torch.tensor([word_map[word] for word in img_caption_list.split() if word in vocab]) ## will produce different size tensor which is not useful
-        # img_capt_lst_tensor.append(lookup) 
 
         lookup_tensor = torch.tensor([word_map[word] if word in vocab else word_map['<unkn>'] for word in img_caption_list.split()])
 
-        # print(lookup_tensor)
         return lookup_tensor
-        # return torch.zeros(len(img_caption_list), 10)
+
 
 ## dataset class 
 
@@ -260,7 +242,6 @@ class ImageCaptionsDataset(Dataset):
 
     def __getitem__(self, idx):
         img_name = self.image_ids[idx] 
-        # print(img_name)
         image = io.imread(os.path.join(self.img_dir,img_name)) 
         captions = self.captions_dict[img_name] 
     
@@ -281,7 +262,6 @@ class ImageCaptionsNet(nn.Module):
         super(ImageCaptionsNet, self).__init__()
 
         ## CNN Encoder 
-        # resnet = models.resnet152(pretrained=True) 
         resnet = models.resnet101(pretrained=True)  
         modules = list(resnet.children())[:-1]      # delete the last fc layer.
         self.resnet = nn.Sequential(*modules)
@@ -304,36 +284,18 @@ class ImageCaptionsNet(nn.Module):
     def forward(self, x):
     # def forward(self, x):
         image_batch, captions_batch  = x 
-        # image_batch, captions_batch, lengths  = x 
-
-        # Forward Propogation 
+        
         ## cnn encoder 
         feat = self.resnet(image_batch) 
         feat = feat.reshape(feat.size(0), -1) 
         feat = self.bn(self.linear(feat))  ## adding batch norm  
-        # feat = self.linear(feat)    
 
-        # print(feat.shape)  # torch.Size([32, 256]) 
 
         ## lstm decoder 
         embeddings = self.embed(captions_batch) 
-        # print(embeddings.shape)  # torch.Size([32, 10, 256])
-        # print(feat.unsqueeze(1).shape) # torch.Size([32, 1, 256])
         embeddings = torch.cat((feat.unsqueeze(1), embeddings[:, :-1,:]), dim=1)   
-        # print(embeddings.shape) # torch.Size([32, 10, 256]) 
-        # embeddings = torch.cat((feat.unsqueeze(1), embeddings), dim=1) 
-        # embeddings = self.dropout(embeddings)  ## dropout ignoring for now//so as to first overfit 
-        # print(embeddings.shape) 
-        # packed = pack_padded_sequence(embeddings, lengths, batch_first=True)  ## not knowing its significance currently  
-        # print(packed.shape) 
         hiddens, c = self.lstm(embeddings) 
-        # print(hiddens.shape) # torch.Size([32, 10, 256]) 
         outputs = self.linear_lstm(hiddens)  
-        # print(outputs.shape) # torch.Size([32, 10, 1837])
-        # hiddens, c = self.lstm(packed) 
-        # outputs = self.linear_lstm(hiddens[0]) 
-        # print(outputs) 
-
         return outputs, feat
 
 
@@ -379,32 +341,26 @@ if __name__ == '__main__':
     # Sequentially compose the transforms ## normalising the image acc to  imagenet mean and std (so that when pretrained model of imagenet could be useful)
     img_transform = transforms.Compose([Rescale(IMAGE_RESIZE), ToTensor(),  transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
 
-    # Set the captions tsv file path
+
     CAPTIONS_FILE_PATH = args.train_tsv_path
-    # print('preprocessing....captions')  
+ 
     captions_preprocessing_obj = CaptionsPreprocessing(CAPTIONS_FILE_PATH) 
     vocab = captions_preprocessing_obj.generate_vocabulary()
     vocab_size = len(vocab)
 
-    # print(vocab_size) # 1837 ## for the current model 
 
     net = ImageCaptionsNet(embed_size=512, hidden_size=512, vocab_size=vocab_size)
-    # If GPU training is required
-    # net = net.cuda() 
+
     net = net.to(device)
 
     IMAGE_DIR = args.image_dir_train ## train image directory 
 
-    # Creating the Dataset
+
     dataset = ImageCaptionsDataset(
         IMAGE_DIR, captions_preprocessing_obj.captions_dict, img_transform=img_transform,
         captions_transform=captions_preprocessing_obj.captions_transform
     ) 
-    
-    # print('*******************')
-    # print(train_dataset)
 
-    # Define your hyperparameters
     NUMBER_OF_EPOCHS = 3000
     LEARNING_RATE = 1e-1
     BATCH_SIZE = 32
@@ -412,9 +368,6 @@ if __name__ == '__main__':
     NUM_WORKERS = 0 # Parallel threads for dataloading
     loss_function = nn.CrossEntropyLoss()
     optimizer = optim.SGD(net.parameters(), lr=LEARNING_RATE) 
-
-    # print(train_dataset)
-    # print(len(train_dataset)) 
 
     validation_split = 0.1
     dataset_size = len(dataset) 
@@ -425,8 +378,6 @@ if __name__ == '__main__':
         np.random.seed(14)
         np.random.shuffle(indices)
     train_indices, val_indices = indices[split:], indices[:split]  
-    # print(len(train_indices)) 
-    # print(len(val_indices))
     train_sampler = SubsetRandomSampler(train_indices)
     valid_sampler = SubsetRandomSampler(val_indices)
 
@@ -435,10 +386,7 @@ if __name__ == '__main__':
     val_loader = DataLoader(dataset, batch_size=VAL_BATCH_SIZE,
                                                     sampler=valid_sampler, num_workers=NUM_WORKERS) 
  
-    # Creating the DataLoader for batching purposes
-    # print(train_dataset) 
-    # train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)    ## original
-    # print(train_loader)
+
 
     best_val_loss = np.inf 
     val_check = 1
@@ -448,38 +396,17 @@ if __name__ == '__main__':
             net.zero_grad() 
             net.train() 
             image_batch, captions_batch = sample['image'], sample['captions']
-            # image_batch, captions_batch, lengths_batch = sample['image'], sample['captions'], sample['lengths']  
-            # captions_batch = pack_padded_sequence(captions, lengths, batch_first=True, enforce_sorted =False)[0] 
-
-            # If GPU training required
-            # image_batch, captions_batch = image_batch.cuda(), captions_batch.cuda() 
+        
             image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
-            # image_batch, captions_batch, lengths_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device), lengths_batch.to(device)
+        
 
             output_captions,_ = net((image_batch, captions_batch))  
-            # print(output_captions.shape)  
-            
-            # sample_beam_search(output_captions, beam_width=3)
-            # break
-            # print(output_captions.shape) # torch.Size([32, 10, 1837])
-            # output_captions = net((image_batch, captions_batch, lengths_batch)) 
-            # print(captions_batch.shape) # torch.Size([32, 10])
             loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
             train_epoch_loss += loss
             loss.backward()
             optimizer.step()  
 
-            break
 
-            # writer.add_scalar('training iter loss', train_epoch_loss.item(), batch_idx)
-            
-            # print(train_epoch_loss)
-            # print(loss.item())  
-            # torch.save(net.state_dict(), args.model_save_path)  
-            # print('model_updated') 
-            # print(len(train_loader))
-
-        # break 
         train_epoch_loss /= len(train_loader)
         print('train_loss_epoch:',epoch, '  ', train_epoch_loss.item())
         writer.add_scalar('training loss', train_epoch_loss.item(), epoch) 
@@ -504,9 +431,6 @@ if __name__ == '__main__':
                     print('Model_updated')
 
     writer.close() 
-
-
-        # print("Epoch: " + str(epoch + 1))
 
 
 
