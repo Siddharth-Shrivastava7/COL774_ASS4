@@ -17,10 +17,10 @@ from torch.utils.data.sampler import SubsetRandomSampler
 import os 
 import math 
 from tensorboardX import SummaryWriter 
-from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
-
-
-torch.backends.cudnn.benchmark = True 
+from nltk.translate.bleu_score import sentence_bleu, corpus_bleu 
+from PIL import Image  
+from torchvision.models.inception import BasicConv2d, InceptionA 
+from torch.optim.lr_scheduler import StepLR
 
 # os.environ["CUDA_VISIBLE_DEVICES"] = "1" 
 
@@ -30,7 +30,7 @@ from nltk.stem import WordNetLemmatizer
 wordnet_lemmatizer = WordNetLemmatizer()
 
 
-writer = SummaryWriter() 
+writer = SummaryWriter('comp') 
 
 import argparse 
 parser = argparse.ArgumentParser() 
@@ -38,10 +38,10 @@ parser = argparse.ArgumentParser()
 complete the req args 
 '''
 
-parser.add_argument('-tr', '--train_tsv_path', default='/home/cse/phd/anz208849/assignments/COL774/COL774_ASS4/Train_text.tsv') 
-parser.add_argument('-imdirtr', '--image_dir_train', default='/home/cse/phd/anz208849/assignments/COL774/ass4') 
-parser.add_argument('-imdirte', '--image_dir_test', default='/home/cse/phd/anz208849/assignments/COL774/ass4')  
-parser.add_argument('-ms', '--model_save_path', default='/home/cse/phd/anz208849/assignments/COL774/ass4/non_comp.pth')
+parser.add_argument('-tr', '--train_tsv_path', default='/home/sidd_s/assign/COL774_ASS4/Train_text.tsv') 
+parser.add_argument('-imdirtr', '--image_dir_train', default='/home/sidd_s/assign/data') 
+parser.add_argument('-imdirte', '--image_dir_test', default='/home/sidd_s/assign/data')  
+parser.add_argument('-ms', '--model_save_path', default='/home/sidd_s/assign/comp.pth')
 
 args = parser.parse_args()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
@@ -72,8 +72,10 @@ class Rescale(object):
 
         new_h, new_w = int(new_h), int(new_w) 
         # print(image)
-        img = transform.resize(image, (new_h, new_w))  ## pixel value are between 0 and 1 
+        img = transform.resize(image, (new_h, new_w))  ## pixel value are between 0 and 1    
+        # img = np.array(image.resize((new_w, new_h), Image.ANTIALIAS)) ## not standardising here
         # print(img)
+        # print(img)  
         return img
 
 
@@ -128,7 +130,7 @@ class CaptionsPreprocessing:
                 captions_dict[img_captions[0]] = img_captions[1]
                 # print(img_captions[0])
                 # break
-        # print(captions_dict)
+        # print(captions_dict)  
         return captions_dict
 
     def process_captions(self):
@@ -140,6 +142,7 @@ class CaptionsPreprocessing:
         captions_dict = raw_captions_dict
         ## complete the for preprocessing here 
 
+        global max_len_cap 
         max_len_cap = 0 
         # print(captions_dict)
         ## max len caption find and save the value for making each caption of equal length 
@@ -152,27 +155,17 @@ class CaptionsPreprocessing:
             # print(max_len_cap)
         
         for img_p, caption in captions_dict.items():  
-            # print(caption)
-            caption=" ".join([i for i in caption.split() if i not in string.punctuation]) 
-            caption = caption.lower()  
-            # print(caption)
-            # remove single letter words such as a .. s 
-            caption = " ".join([word for word in caption.split() if len(word)>1])
-            # removing numbers from caption (optional) 
-            # caption = " ".join([word for word in caption.split() if word.isalpha()])  
-            ## remove stop words  
-            caption = " ".join([word for word in caption.split() if word not in stopwords])
-            ##  performing lemmatization over stemming (for meaningful words generations with the short form) 
-            caption = " ".join([wordnet_lemmatizer.lemmatize(word) for word in caption.split()])  
-            # print(caption) 
-
+    
             pad_len = max_len_cap - len(caption.split(' '))  
             # print(pad_len)
             # print(caption)
+            # print(max_len_cap) 
 
             caption =  '<st> ' + caption + ' <en>'  + pad_len * ' <pad>' ## padding for ensuring each caption is of same length
 
-            captions_dict[img_p] = caption
+            captions_dict[img_p] = caption 
+
+            # max_len_cap += 2
     
         return captions_dict
 
@@ -216,16 +209,6 @@ class CaptionsPreprocessing:
 
         word_map = dict(zip(iter(vocab), range(len(vocab))))
         img_capt_lst_tensor = []
-        
-        # print(word_map)
-        # print(img_caption_list)
-
-        ## word is a token 
-        # for caption in img_caption_list: 
-        #     # print(caption)
-
-        # lookup_tensor = torch.tensor([word_map[word] for word in img_caption_list.split() if word in vocab]) ## will produce different size tensor which is not useful
-        # img_capt_lst_tensor.append(lookup) 
 
         lookup_tensor = torch.tensor([word_map[word] if word in vocab else word_map['<unkn>'] for word in img_caption_list.split()])
 
@@ -260,22 +243,14 @@ class ImageCaptionsDataset(Dataset):
 
     def __getitem__(self, idx):
         img_name = self.image_ids[idx] 
-        # print(img_name)
-        image = io.imread(os.path.join(self.img_dir,img_name)) 
-        # image = io.imread(img_name)
+        image = Image.open(os.path.join(self.img_dir,img_name))
         captions = self.captions_dict[img_name] 
-        # print(captions) 
-        # print('**************')
-        # print(len(captions.split(' ')))
-        # lengths = len(captions.split(' '))
-
+    
         if self.img_transform:
             image = self.img_transform(image)
 
         if self.captions_transform:
             captions = self.captions_transform(captions)
-
-        # print(captions)
 
         # sample = {'image': image, 'captions': captions, 'lengths': lengths}
         sample = {'image': image, 'captions': captions}
@@ -284,85 +259,164 @@ class ImageCaptionsDataset(Dataset):
 
 ## Model architecture 
 
-class ImageCaptionsNet(nn.Module):
-    def __init__(self, embed_size, hidden_size, vocab_size, drop_pr=0.3, num_layers=1, fine_tune_start = 5, max_seq_length =20):
-        super(ImageCaptionsNet, self).__init__()
+class MyIncept(nn.Module):
+    def __init__(self):
+        super(MyIncept, self).__init__()
+        self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
+        self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
+        self.Conv2d_2b_3x3 = BasicConv2d(32, 64, kernel_size=3, padding=1)
+        self.Conv2d_3b_1x1 = BasicConv2d(64, 80, kernel_size=1)
+        self.Conv2d_4a_3x3 = BasicConv2d(80, 192, kernel_size=3)
+        self.Mixed_5b = InceptionA(192, pool_features=32)
+        self.Mixed_5c = InceptionA(256, pool_features=64)
+        self.Mixed_5d = InceptionA(288, pool_features=64)
 
-        ## CNN Encoder 
-        # resnet = models.resnet152(pretrained=True) 
-        resnet = models.resnet101(pretrained=True)  
-        modules = list(resnet.children())[:-1]      # delete the last fc layer.
-        self.resnet = nn.Sequential(*modules)
-        self.linear = nn.Linear(resnet.fc.in_features, embed_size) 
-        self.bn = nn.BatchNorm1d(embed_size, momentum=0.01)   ## to try  
-        ## tunning only few layers since the dataset is small
-        self.fine_tune(fine_tune_start)
-
-        ## LSTM decoder 
-        # self.drop_prob= drop_pr 
-        self.lstm = nn.LSTM(embed_size, hidden_size , num_layers, batch_first=True) 
-        self.dropout = nn.Dropout(drop_pr)  
-        self.embed = nn.Embedding(vocab_size, embed_size)   
-        self.linear_lstm = nn.Linear(hidden_size, vocab_size)
-        # self.max_seq_length = max_seq_length   
-
-        # Define your architecture here
-        
+        for m in self.modules():
+            if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
+                import scipy.stats as stats
+                stddev = m.stddev if hasattr(m, 'stddev') else 0.1
+                X = stats.truncnorm(-2, 2, scale=stddev)
+                values = torch.Tensor(X.rvs(m.weight.numel()))
+                values = values.view(m.weight.size())
+                m.weight.data.copy_(values)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.constant_(m.weight, 1)
+                nn.init.constant_(m.bias, 0)
 
     def forward(self, x):
-    # def forward(self, x):
-        image_batch, captions_batch  = x 
-        # image_batch, captions_batch, lengths  = x 
-
-        # Forward Propogation 
-        ## cnn encoder 
-        feat = self.resnet(image_batch) 
-        feat = feat.reshape(feat.size(0), -1) 
-        feat = self.bn(self.linear(feat))  ## adding batch norm  
-        # feat = self.linear(feat)    
-
-        # print(feat.shape)  # torch.Size([32, 256]) 
-
-        ## lstm decoder 
-        embeddings = self.embed(captions_batch) 
-        # print(embeddings.shape)  # torch.Size([32, 10, 256])
-        # print(feat.unsqueeze(1).shape) # torch.Size([32, 1, 256])
-        embeddings = torch.cat((feat.unsqueeze(1), embeddings[:, :-1,:]), dim=1)   
-        # print(embeddings.shape) # torch.Size([32, 10, 256]) 
-        # embeddings = torch.cat((feat.unsqueeze(1), embeddings), dim=1) 
-        # embeddings = self.dropout(embeddings)  ## dropout ignoring for now//so as to first overfit 
-        # print(embeddings.shape) 
-        # packed = pack_padded_sequence(embeddings, lengths, batch_first=True)  ## not knowing its significance currently  
-        # print(packed.shape) 
-        hiddens, c = self.lstm(embeddings) 
-        # print(hiddens.shape) # torch.Size([32, 10, 256]) 
-        outputs = self.linear_lstm(hiddens)  
-        # print(outputs.shape) # torch.Size([32, 10, 1837])
-        # hiddens, c = self.lstm(packed) 
-        # outputs = self.linear_lstm(hiddens[0]) 
-        # print(outputs) 
-
-        return outputs
-
-
-    def fine_tune(self, fine_tune_ = True, fine_tune_start = 5): 
-        '''
-        Allow or prevent the computation of gradients for convolutional blocks 2 through 4 of the encoder.
-
-        ''' 
-        for p in self.resnet.parameters(): 
-            p.requires_grad = False 
-        ## fine tunning only the latter layers since initial layers capture generic features such as edges, blobs..
-        for c in list(self.resnet.children())[fine_tune_start:]: 
-            for p in c.parameters():  
-                if fine_tune_:
-                    p.requires_grad = True
+        x = self.Conv2d_1a_3x3(x)
+        x = self.Conv2d_2a_3x3(x)
+        x = self.Conv2d_2b_3x3(x)
+        x = F.max_pool2d(x, kernel_size=3, stride=2)
+        x = self.Conv2d_3b_1x1(x)
+        x = self.Conv2d_4a_3x3(x) 
+        x = F.max_pool2d(x, kernel_size=3, stride=2)
+        x = self.Mixed_5b(x)
+        x = self.Mixed_5c(x)
+        x = self.Mixed_5d(x)
+        # print(x.shape)
+        return x
 
 
 
-def beam_search_pred(model, image,  vocab_dict, beam_width=3, log=False): 
+
+class OneHot(nn.Module):
+    def __init__(self, depth):
+        super(OneHot, self).__init__()
+        emb = nn.Embedding(depth, depth)
+        emb.weight.data = torch.eye(depth)
+        emb.weight.requires_grad = False
+        self.emb = emb
+
+    def forward(self, input_):
+        return self.emb(input_)
+
+
+## mod attention module 
+ 
+class attention_mod(nn.Module):
+    def __init__(self, hidden_size):
+        super(attention_mod, self).__init__()
+        self.hidden_size = hidden_size
+
+        self.attn = nn.Linear(hidden_size * 2, hidden_size)
+        self.v = nn.Parameter(torch.rand(hidden_size), requires_grad=True)
+        stdv = 1. / math.sqrt(self.v.size(0))
+        self.v.data.uniform_(-stdv, stdv)
+
+    def forward(self, hidden, encoder_outputs):
+        timestep = encoder_outputs.size(1)
+        h = hidden.expand(timestep, -1, -1).transpose(0, 1)
+        attn_energies = self.score(h, encoder_outputs)
+        return attn_energies.softmax(2)
+
+    def score(self, hidden, encoder_outputs):
+        energy = torch.tanh(self.attn(torch.cat([hidden, encoder_outputs], 2)))
+        energy = energy.transpose(1, 2)
+        v = self.v.expand(encoder_outputs.size(0), -1).unsqueeze(1)
+        energy = torch.bmm(v, energy)
+        return energy
+
+
+class decoder(nn.Module): 
+    def __init__(self, vocab_size, max_seq_length,  hidden_size, drop_pr=0.1, num_layers=1):
+        super().__init__()
+
+        self.emb = nn.Embedding(vocab_size, hidden_size) 
+        self.attention = attention_mod(hidden_size) 
+        self.rnn = nn.GRU(hidden_size * 2, hidden_size, num_layers)
+        self.out = nn.Linear(hidden_size, vocab_size)  
+        self.max_seq_length = max_seq_length
+        self.drop_pr = drop_pr 
+        self.hidden_size = hidden_size
+
+    def forward_step(self, input_, last_hidden, encoder_outputs):
+        emb = self.emb(input_.transpose(0, 1))
+        attn = self.attention(last_hidden, encoder_outputs)
+        context = attn.bmm(encoder_outputs).transpose(0, 1)
+        rnn_input = torch.cat((emb, context), dim=2)
+
+        outputs, hidden = self.rnn(rnn_input, last_hidden)
+
+        if outputs.requires_grad:
+            outputs.register_hook(lambda x: x.clamp(min=-10, max=10))
+
+        outputs = self.out(outputs.contiguous().squeeze(0)).log_softmax(1)
+
+        return outputs, hidden
+
+    def forward(self, x, encoder_outputs = None): 
+        batch_size = x.shape[0]
+        outputs = [] 
+        self.rnn.flatten_parameters() 
+        decoder_hidden = torch.zeros(1, batch_size, self.hidden_size, device=encoder_outputs.device)  
     
-    
+        for di in range(self.max_seq_length):
+            decoder_input = x[:, di].unsqueeze(1)
+
+            decoder_output, decoder_hidden = self.forward_step(
+                decoder_input, decoder_hidden, encoder_outputs)
+
+            step_output = decoder_output.squeeze(1)
+            outputs.append(step_output)
+
+        outputs = torch.stack(outputs).permute(1, 0, 2) 
+        return outputs, decoder_hidden
+
+class ImageCaptionsNet_mod(nn.Module):
+    def __init__(self, img_width, img_height, hidden_size, vocab_size, max_len):
+        super().__init__() 
+
+        # self.incept = encoder_cnn(embed_size=256) 
+        self.incept = MyIncept()
+        f = self.incept(torch.rand(32, 3, img_height, img_width))  
+        # print(f.shape) 
+        self._fh = f.size(2)
+        self._fw = f.size(3) 
+        self.onehot_x = OneHot(self._fh)
+        self.onehot_y = OneHot(self._fw) 
+        self.encode_emb = nn.Linear(288 + self._fh + self._fw, hidden_size)
+        self.decoder = decoder(vocab_size, max_len, hidden_size) 
+
+    def forward(self, input_, target_seq=None):  
+
+        # print(input_.shape) # torch.Size([32, 3, 224, 224])
+        encoder_outputs = self.incept(input_) 
+        b, fc, fh, fw = encoder_outputs.size() 
+        x, y = torch.meshgrid(torch.arange(fh, device=device), torch.arange(fw, device=device))
+        h_loc = self.onehot_x(x)
+        w_loc = self.onehot_y(y) 
+        loc = torch.cat([h_loc, w_loc], dim=2).unsqueeze(0).expand(b, -1, -1, -1)
+        encoder_outputs = torch.cat([encoder_outputs.permute(0, 2, 3, 1), loc], dim=3)
+        encoder_outputs = encoder_outputs.contiguous().view(b, -1, 288 + self._fh + self._fw)
+        encoder_outputs = self.encode_emb(encoder_outputs)
+        decoder_outputs, decoder_hidden = self.decoder(target_seq, encoder_outputs=encoder_outputs)
+        return decoder_outputs 
+        
+
+
+
+def beam_search_pred(model, image,  vocab_dict, beam_width=3, log=False):     
 
     pass  
 
@@ -384,8 +438,9 @@ def blue_score(references, candidates, sentence = False):
 if __name__ == '__main__': 
 
     IMAGE_RESIZE = (256, 256)
-    # Sequentially compose the transforms ## normalising the image acc to  imagenet mean and std (so that when pretrained model of imagenet could be useful)
-    img_transform = transforms.Compose([Rescale(IMAGE_RESIZE), ToTensor(),  transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))])
+    # img_transform = transforms.Compose([Rescale(IMAGE_RESIZE), ToTensor()])
+    img_transform = transforms.Compose([transforms.Resize(size=(224,224)), transforms.ToTensor(),  transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))]) 
+    # img_transform = transforms.Compose([transforms.Resize(size=(224,224)), transforms.ToTensor()])
 
     # Set the captions tsv file path
     CAPTIONS_FILE_PATH = args.train_tsv_path
@@ -393,10 +448,13 @@ if __name__ == '__main__':
     captions_preprocessing_obj = CaptionsPreprocessing(CAPTIONS_FILE_PATH) 
     vocab = captions_preprocessing_obj.generate_vocabulary()
     vocab_size = len(vocab)
-
+    
     # print(vocab_size) # 1837 ## for the current model 
 
-    net = ImageCaptionsNet(embed_size=512, hidden_size=512, vocab_size=vocab_size)
+
+    # net = ImageCaptionsNet(embed_size=512, hidden_size=512, vocab_size=vocab_size) 
+
+    net = ImageCaptionsNet_mod(img_width=224, img_height=224, hidden_size=1024, vocab_size=vocab_size, max_len=max_len_cap+2) ## 2 adding for end and start token
     # If GPU training is required
     # net = net.cuda() 
     net = net.to(device)
@@ -414,12 +472,14 @@ if __name__ == '__main__':
 
     # Define your hyperparameters
     NUMBER_OF_EPOCHS = 3000
-    LEARNING_RATE = 1e-1
-    BATCH_SIZE = 32
+    LEARNING_RATE = 1e-3
+    BATCH_SIZE = 128
     VAL_BATCH_SIZE = 1 
-    NUM_WORKERS = 0 # Parallel threads for dataloading
+    NUM_WORKERS = 1 # Parallel threads for dataloading
     loss_function = nn.CrossEntropyLoss()
-    optimizer = optim.SGD(net.parameters(), lr=LEARNING_RATE) 
+    # optimizer = optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=0.9)   
+    optimizer = optim.Adam(net.parameters(), lr=LEARNING_RATE)
+    # scheduler = StepLR(optimizer, step_size=50, gamma=0.5)
 
     # print(train_dataset)
     # print(len(train_dataset)) 
@@ -439,10 +499,11 @@ if __name__ == '__main__':
     valid_sampler = SubsetRandomSampler(val_indices)
 
     train_loader = DataLoader(dataset, batch_size=BATCH_SIZE, 
-                                            sampler=train_sampler, num_workers=NUM_WORKERS) 
+                                            sampler=train_sampler, num_workers=NUM_WORKERS, pin_memory=True) 
     val_loader = DataLoader(dataset, batch_size=VAL_BATCH_SIZE,
-                                                    sampler=valid_sampler, num_workers=NUM_WORKERS) 
- 
+                                                    sampler=valid_sampler, num_workers=NUM_WORKERS, pin_memory=True) 
+    
+    # print(len(iter(train_loader[0]))) 
     # Creating the DataLoader for batching purposes
     # print(train_dataset) 
     # train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)    ## original
@@ -464,30 +525,37 @@ if __name__ == '__main__':
             image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
             # image_batch, captions_batch, lengths_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device), lengths_batch.to(device)
 
-            output_captions = net((image_batch, captions_batch))  
-            # print(output_captions.shape)  
+            output_captions = net(image_batch, captions_batch)  
+            # print(output_captions.shape)   # torch.Size([32, 10, 1837]) ## Yes!! samee as the bottom one (previous baseline wala)
             
             # sample_beam_search(output_captions, beam_width=3)
             # break
-            # print(output_captions.shape) # torch.Size([32, 10, 1837])
+            # print(output_captions.shape) # torch.Size([32, 10, 1837]) # torch.Size([32, 10, 2120]) 
             # output_captions = net((image_batch, captions_batch, lengths_batch)) 
-            # print(captions_batch.shape) # torch.Size([32, 10])
-            loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
+            # print(captions_batch.shape) # torch.Size([32, 10])  
+            # print(vocab_size) # 1837 ## 2120 (updated one) 
+            # print(captions_batch.shape) # torch.Size([32, 10])   # torch.Size([32, 10]) 
+            
+            # print(captions_batch.view(-1).shape) 
+            # loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
+            
+            # print(captions_batch.shape)
+            loss = loss_function(output_captions.reshape(-1, vocab_size), captions_batch.view(-1)) 
+            # print(loss)
             train_epoch_loss += loss
             loss.backward()
             optimizer.step()  
+            # scheduler.step()
 
-            break
-
+            # break
             # writer.add_scalar('training iter loss', train_epoch_loss.item(), batch_idx)
-            
             # print(train_epoch_loss)
             # print(loss.item())  
             # torch.save(net.state_dict(), args.model_save_path)  
             # print('model_updated') 
             # print(len(train_loader))
-
         # break 
+
         train_epoch_loss /= len(train_loader)
         print('train_loss_epoch:',epoch, '  ', train_epoch_loss.item())
         writer.add_scalar('training loss', train_epoch_loss.item(), epoch) 
@@ -515,7 +583,3 @@ if __name__ == '__main__':
 
 
         # print("Epoch: " + str(epoch + 1))
-
-
-
-    
