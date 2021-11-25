@@ -259,45 +259,30 @@ class ImageCaptionsDataset(Dataset):
 
 ## Model architecture 
 
-class MyIncept(nn.Module):
-    def __init__(self):
-        super(MyIncept, self).__init__()
-        self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
-        self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
-        self.Conv2d_2b_3x3 = BasicConv2d(32, 64, kernel_size=3, padding=1)
-        self.Conv2d_3b_1x1 = BasicConv2d(64, 80, kernel_size=1)
-        self.Conv2d_4a_3x3 = BasicConv2d(80, 192, kernel_size=3)
-        self.Mixed_5b = InceptionA(192, pool_features=32)
-        self.Mixed_5c = InceptionA(256, pool_features=64)
-        self.Mixed_5d = InceptionA(288, pool_features=64)
+class resnet(nn.Module): 
+    def __init__(self, fine_tune_last):
+        super().__init__()
+        model_resnet = models.resnet18(pretrained=True) 
+        modules = list(model_resnet.children())[:-1]  
+        self.resnet = nn.Sequential(*modules) 
+        self.fine_tune(fine_tune_last)
 
-        for m in self.modules():
-            if isinstance(m, nn.Conv2d) or isinstance(m, nn.Linear):
-                import scipy.stats as stats
-                stddev = m.stddev if hasattr(m, 'stddev') else 0.1
-                X = stats.truncnorm(-2, 2, scale=stddev)
-                values = torch.Tensor(X.rvs(m.weight.numel()))
-                values = values.view(m.weight.size())
-                m.weight.data.copy_(values)
-            elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant_(m.weight, 1)
-                nn.init.constant_(m.bias, 0)
+    def forward(self, x): 
+        x = self.resnet(x)  
+        return x 
 
-    def forward(self, x):
-        x = self.Conv2d_1a_3x3(x)
-        x = self.Conv2d_2a_3x3(x)
-        x = self.Conv2d_2b_3x3(x)
-        x = F.max_pool2d(x, kernel_size=3, stride=2)
-        x = self.Conv2d_3b_1x1(x)
-        x = self.Conv2d_4a_3x3(x) 
-        x = F.max_pool2d(x, kernel_size=3, stride=2)
-        x = self.Mixed_5b(x)
-        x = self.Mixed_5c(x)
-        x = self.Mixed_5d(x)
-        # print(x.shape)
-        return x
+    def fine_tune(self, fine_tune_last, fine_tune_ = True): 
+        '''
+        Allow or prevent the computation of gradients for convolutional blocks 2 through 4 of the encoder.
 
-
+        ''' 
+        for p in self.resnet.parameters(): 
+            p.requires_grad = False 
+        ## fine tunning only the latter layers since initial layers capture generic features such as edges, blobs..
+        for c in list(self.resnet.children())[:-fine_tune_last]: 
+            for p in c.parameters():  
+                if fine_tune_:
+                    p.requires_grad = True
 
 
 class OneHot(nn.Module):
@@ -361,7 +346,8 @@ class decoder(nn.Module):
         if outputs.requires_grad:
             outputs.register_hook(lambda x: x.clamp(min=-10, max=10))
 
-        outputs = self.out(outputs.contiguous().squeeze(0)).log_softmax(1)
+        # outputs = self.out(outputs.contiguous().squeeze(0)).log_softmax(1)
+        outputs = self.out(outputs.contiguous().squeeze(0)) ## logits sending 
 
         return outputs, hidden
 
@@ -387,20 +373,19 @@ class ImageCaptionsNet_mod(nn.Module):
     def __init__(self, img_width, img_height, hidden_size, vocab_size, max_len):
         super().__init__() 
 
-        # self.incept = encoder_cnn(embed_size=256) 
-        self.incept = MyIncept()
+        self.incept = resnet(fine_tune_last=2)
+
         f = self.incept(torch.rand(32, 3, img_height, img_width))  
-        # print(f.shape) 
+        self._fc = f.size(1)
         self._fh = f.size(2)
         self._fw = f.size(3) 
         self.onehot_x = OneHot(self._fh)
         self.onehot_y = OneHot(self._fw) 
-        self.encode_emb = nn.Linear(288 + self._fh + self._fw, hidden_size)
+        self.encode_emb = nn.Linear(self._fc + self._fh + self._fw, hidden_size)
         self.decoder = decoder(vocab_size, max_len, hidden_size) 
 
     def forward(self, input_, target_seq=None):  
 
-        # print(input_.shape) # torch.Size([32, 3, 224, 224])
         encoder_outputs = self.incept(input_) 
         b, fc, fh, fw = encoder_outputs.size() 
         x, y = torch.meshgrid(torch.arange(fh, device=device), torch.arange(fw, device=device))
@@ -408,10 +393,10 @@ class ImageCaptionsNet_mod(nn.Module):
         w_loc = self.onehot_y(y) 
         loc = torch.cat([h_loc, w_loc], dim=2).unsqueeze(0).expand(b, -1, -1, -1)
         encoder_outputs = torch.cat([encoder_outputs.permute(0, 2, 3, 1), loc], dim=3)
-        encoder_outputs = encoder_outputs.contiguous().view(b, -1, 288 + self._fh + self._fw)
-        encoder_outputs = self.encode_emb(encoder_outputs)
+        encoder_outputs = encoder_outputs.contiguous().view(b, -1, self._fc + self._fh + self._fw)
+        encoder_outputs = self.encode_emb(encoder_outputs) 
         decoder_outputs, decoder_hidden = self.decoder(target_seq, encoder_outputs=encoder_outputs)
-        return decoder_outputs 
+        return decoder_outputs, encoder_outputs
         
 
 
@@ -473,7 +458,7 @@ if __name__ == '__main__':
     # Define your hyperparameters
     NUMBER_OF_EPOCHS = 3000
     LEARNING_RATE = 1e-3
-    BATCH_SIZE = 128
+    BATCH_SIZE = 256
     VAL_BATCH_SIZE = 1 
     NUM_WORKERS = 1 # Parallel threads for dataloading
     loss_function = nn.CrossEntropyLoss()
@@ -525,21 +510,9 @@ if __name__ == '__main__':
             image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
             # image_batch, captions_batch, lengths_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device), lengths_batch.to(device)
 
-            output_captions = net(image_batch, captions_batch)  
+            output_captions, _ = net(image_batch, captions_batch)  
             # print(output_captions.shape)   # torch.Size([32, 10, 1837]) ## Yes!! samee as the bottom one (previous baseline wala)
             
-            # sample_beam_search(output_captions, beam_width=3)
-            # break
-            # print(output_captions.shape) # torch.Size([32, 10, 1837]) # torch.Size([32, 10, 2120]) 
-            # output_captions = net((image_batch, captions_batch, lengths_batch)) 
-            # print(captions_batch.shape) # torch.Size([32, 10])  
-            # print(vocab_size) # 1837 ## 2120 (updated one) 
-            # print(captions_batch.shape) # torch.Size([32, 10])   # torch.Size([32, 10]) 
-            
-            # print(captions_batch.view(-1).shape) 
-            # loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
-            
-            # print(captions_batch.shape)
             loss = loss_function(output_captions.reshape(-1, vocab_size), captions_batch.view(-1)) 
             # print(loss)
             train_epoch_loss += loss
@@ -568,8 +541,9 @@ if __name__ == '__main__':
                 for val_sample in tqdm(val_loader):
                     val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
                     val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
-                    val_output_captions = net((val_image_batch, val_captions_batch))
+                    val_output_captions,_ = net(val_image_batch, val_captions_batch)
                     val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
+                    # print(val_loss)
                     val_epoch_loss+=val_loss
                 val_epoch_loss /= len(val_loader) 
                 writer.add_scalar('validation loss', val_epoch_loss.item(), epoch)
