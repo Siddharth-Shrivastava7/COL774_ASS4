@@ -422,10 +422,7 @@ def blue_score(references, candidates, sentence = False):
 
 if __name__ == '__main__': 
 
-    IMAGE_RESIZE = (256, 256)
-    # img_transform = transforms.Compose([Rescale(IMAGE_RESIZE), ToTensor()])
-    img_transform = transforms.Compose([transforms.Resize(size=(224,224)), transforms.ToTensor(),  transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))]) 
-    # img_transform = transforms.Compose([transforms.Resize(size=(224,224)), transforms.ToTensor()])
+    img_transform = transforms.Compose([transforms.Resize(size=(256,256)), transforms.ToTensor(),  transforms.Normalize((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))]) 
 
     # Set the captions tsv file path
     CAPTIONS_FILE_PATH = args.train_tsv_path
@@ -433,15 +430,8 @@ if __name__ == '__main__':
     captions_preprocessing_obj = CaptionsPreprocessing(CAPTIONS_FILE_PATH) 
     vocab = captions_preprocessing_obj.generate_vocabulary()
     vocab_size = len(vocab)
-    
-    # print(vocab_size) # 1837 ## for the current model 
 
-
-    # net = ImageCaptionsNet(embed_size=512, hidden_size=512, vocab_size=vocab_size) 
-
-    net = ImageCaptionsNet_mod(img_width=224, img_height=224, hidden_size=1024, vocab_size=vocab_size, max_len=max_len_cap+2) ## 2 adding for end and start token
-    # If GPU training is required
-    # net = net.cuda() 
+    net = ImageCaptionsNet_mod(img_width=256, img_height=256, hidden_size=2048, vocab_size=vocab_size, max_len=max_len_cap+2) ## 2 adding for end and start token
     net = net.to(device)
 
     IMAGE_DIR = args.image_dir_train ## train image directory 
@@ -452,8 +442,6 @@ if __name__ == '__main__':
         captions_transform=captions_preprocessing_obj.captions_transform
     ) 
     
-    # print('*******************')
-    # print(train_dataset)
 
     # Define your hyperparameters
     NUMBER_OF_EPOCHS = 3000
@@ -465,9 +453,6 @@ if __name__ == '__main__':
     # optimizer = optim.SGD(net.parameters(), lr=LEARNING_RATE, momentum=0.9)   
     optimizer = optim.Adam(net.parameters(), lr=LEARNING_RATE)
     # scheduler = StepLR(optimizer, step_size=50, gamma=0.5)
-
-    # print(train_dataset)
-    # print(len(train_dataset)) 
 
     validation_split = 0.1
     dataset_size = len(dataset) 
@@ -487,12 +472,6 @@ if __name__ == '__main__':
                                             sampler=train_sampler, num_workers=NUM_WORKERS, pin_memory=True) 
     val_loader = DataLoader(dataset, batch_size=VAL_BATCH_SIZE,
                                                     sampler=valid_sampler, num_workers=NUM_WORKERS, pin_memory=True) 
-    
-    # print(len(iter(train_loader[0]))) 
-    # Creating the DataLoader for batching purposes
-    # print(train_dataset) 
-    # train_loader = DataLoader(train_dataset, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)    ## original
-    # print(train_loader)
 
     best_val_loss = np.inf 
     val_check = 1
@@ -502,32 +481,17 @@ if __name__ == '__main__':
             net.zero_grad() 
             net.train() 
             image_batch, captions_batch = sample['image'], sample['captions']
-            # image_batch, captions_batch, lengths_batch = sample['image'], sample['captions'], sample['lengths']  
-            # captions_batch = pack_padded_sequence(captions, lengths, batch_first=True, enforce_sorted =False)[0] 
 
-            # If GPU training required
-            # image_batch, captions_batch = image_batch.cuda(), captions_batch.cuda() 
             image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
-            # image_batch, captions_batch, lengths_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device), lengths_batch.to(device)
-
+    
             output_captions, _ = net(image_batch, captions_batch)  
-            # print(output_captions.shape)   # torch.Size([32, 10, 1837]) ## Yes!! samee as the bottom one (previous baseline wala)
-            
+           
             loss = loss_function(output_captions.reshape(-1, vocab_size), captions_batch.view(-1)) 
             # print(loss)
             train_epoch_loss += loss
             loss.backward()
             optimizer.step()  
             # scheduler.step()
-
-            # break
-            # writer.add_scalar('training iter loss', train_epoch_loss.item(), batch_idx)
-            # print(train_epoch_loss)
-            # print(loss.item())  
-            # torch.save(net.state_dict(), args.model_save_path)  
-            # print('model_updated') 
-            # print(len(train_loader))
-        # break 
 
         train_epoch_loss /= len(train_loader)
         print('train_loss_epoch:',epoch, '  ', train_epoch_loss.item())
@@ -554,6 +518,3 @@ if __name__ == '__main__':
                     print('Model_updated')
 
     writer.close() 
-
-
-        # print("Epoch: " + str(epoch + 1))

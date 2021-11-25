@@ -262,22 +262,14 @@ class ImageCaptionsDataset(Dataset):
         img_name = self.image_ids[idx] 
         # print(img_name)
         image = io.imread(os.path.join(self.img_dir,img_name)) 
-        # image = io.imread(img_name)
         captions = self.captions_dict[img_name] 
-        # print(captions) 
-        # print('**************')
-        # print(len(captions.split(' ')))
-        # lengths = len(captions.split(' '))
-
+    
         if self.img_transform:
             image = self.img_transform(image)
 
         if self.captions_transform:
             captions = self.captions_transform(captions)
 
-        # print(captions)
-
-        # sample = {'image': image, 'captions': captions, 'lengths': lengths}
         sample = {'image': image, 'captions': captions}
 
         return sample
