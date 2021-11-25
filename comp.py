@@ -337,6 +337,7 @@ class decoder(nn.Module):
 
     def forward(self, x, encoder_outputs = None): 
         batch_size = x.shape[0]
+        self.batch_size = batch_size
         outputs = [] 
         self.rnn.flatten_parameters() 
         decoder_hidden = torch.zeros(1, batch_size, self.hidden_size, device=encoder_outputs.device)  
@@ -353,13 +354,32 @@ class decoder(nn.Module):
         outputs = torch.stack(outputs).permute(1, 0, 2) 
         return outputs, decoder_hidden
 
+    def get_bs_pred(self, x, encoder_outputs = None):
+        
+        outputs = []
+        self.rnn.flatten_parameters()  
+        decoder_hidden = torch.zeros(1, self.batch_size, self.hidden_size, device=encoder_outputs.device)   
+
+        decoder_input = x[:, 0].unsqueeze(1) ## No teacher forcing 
+        for di in range(self.max_seq_length):
+
+            decoder_output, decoder_hidden = self.forward_step(
+                decoder_input, decoder_hidden, encoder_outputs)
+
+            step_output = decoder_output.squeeze(1)
+            outputs.append(step_output)
+
+        outputs = torch.stack(outputs).permute(1, 0, 2) 
+        return outputs, decoder_hidden
+
+
 class ImageCaptionsNet_mod(nn.Module):
     def __init__(self, img_width, img_height, hidden_size, vocab_size, max_len):
         super().__init__() 
 
-        self.incept = resnet(fine_tune_last=2)
+        self.res = resnet(fine_tune_last=2)
 
-        f = self.incept(torch.rand(32, 3, img_height, img_width))  
+        f = self.res(torch.rand(32, 3, img_height, img_width))  
         self._fc = f.size(1)
         self._fh = f.size(2)
         self._fw = f.size(3) 
@@ -370,7 +390,7 @@ class ImageCaptionsNet_mod(nn.Module):
 
     def forward(self, input_, target_seq=None):  
 
-        encoder_outputs = self.incept(input_) 
+        encoder_outputs = self.res(input_) 
         b, fc, fh, fw = encoder_outputs.size() 
         x, y = torch.meshgrid(torch.arange(fh, device=device), torch.arange(fw, device=device))
         h_loc = self.onehot_x(x)
@@ -380,13 +400,26 @@ class ImageCaptionsNet_mod(nn.Module):
         encoder_outputs = encoder_outputs.contiguous().view(b, -1, self._fc + self._fh + self._fw)
         encoder_outputs = self.encode_emb(encoder_outputs) 
         decoder_outputs, decoder_hidden = self.decoder(target_seq, encoder_outputs=encoder_outputs)
-        return decoder_outputs, encoder_outputs
-        
+        return decoder_outputs
+    
+    def enc_bs(self, input):
+        encoder_outputs = self.res(input) 
+        b, fc, fh, fw = encoder_outputs.size() 
+        x, y = torch.meshgrid(torch.arange(fh, device=device), torch.arange(fw, device=device))
+        h_loc = self.onehot_x(x)
+        w_loc = self.onehot_y(y) 
+        loc = torch.cat([h_loc, w_loc], dim=2).unsqueeze(0).expand(b, -1, -1, -1)
+        encoder_outputs = torch.cat([encoder_outputs.permute(0, 2, 3, 1), loc], dim=3)
+        encoder_outputs = encoder_outputs.contiguous().view(b, -1, self._fc + self._fh + self._fw)
+        encoder_outputs = self.encode_emb(encoder_outputs) 
+        return encoder_outputs
 
 
-
-def beam_search_pred(model, image,  vocab_dict, beam_width=3, log=False):     
-
+def beam_search_pred(model, x,  decoder, vocab_dict, beam_width=3, log=False):   
+    img, cap = x 
+    enc_feat = model.enc_bs(img) 
+    outputs, hidden = decoder.get_bs_pred(cap, enc_feat)
+    
     pass  
 
 
@@ -466,7 +499,7 @@ if __name__ == '__main__':
 
             image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
     
-            output_captions, _ = net(image_batch, captions_batch)  
+            output_captions = net(image_batch, captions_batch)  
            
             loss = loss_function(output_captions.reshape(-1, vocab_size), captions_batch.view(-1)) 
             # print(loss)
@@ -487,7 +520,7 @@ if __name__ == '__main__':
                 for val_sample in tqdm(val_loader):
                     val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
                     val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
-                    val_output_captions,_ = net(val_image_batch, val_captions_batch)
+                    val_output_captions = net(val_image_batch, val_captions_batch)
                     val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
                     # print(val_loss)
                     val_epoch_loss+=val_loss

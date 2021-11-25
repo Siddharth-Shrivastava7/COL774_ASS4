@@ -296,7 +296,7 @@ class ImageCaptionsNet(nn.Module):
         embeddings = torch.cat((feat.unsqueeze(1), embeddings[:, :-1,:]), dim=1)   
         hiddens, c = self.lstm(embeddings) 
         outputs = self.linear_lstm(hiddens)  
-        return outputs, feat
+        return outputs
 
 
     def fine_tune(self, fine_tune_ = True, fine_tune_start = 5): 
@@ -312,12 +312,24 @@ class ImageCaptionsNet(nn.Module):
                 if fine_tune_:
                     p.requires_grad = True
 
+    def get_bs_pred(self, features, hidden=None):
+        if(hidden != None):
+            features = self.embed(features).unsqueeze(1)
+        output, hidden = self.lstm(features, hidden)
+        output = self.linear(output.squeeze(1))
+        return output, hidden
+
+    def enc_bs(self, x): 
+        feat = self.resnet(x) 
+        feat = feat.reshape(feat.size(0), -1) 
+        feat = self.bn(self.linear(feat))  ## adding batch norm  
+        return feat
 
 
 def beam_search_pred(model, image,  vocab_dict, beam_width=3, log=False): 
+    enc_feat = model.enc_bs(image) 
+    outputs, hidden = model.get_bs_pred(enc_feat)
     
-    
-
     pass  
 
 
@@ -400,7 +412,7 @@ if __name__ == '__main__':
             image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
         
 
-            output_captions,_ = net((image_batch, captions_batch))  
+            output_captions = net((image_batch, captions_batch))  
             loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
             train_epoch_loss += loss
             loss.backward()
@@ -419,7 +431,7 @@ if __name__ == '__main__':
                 for val_sample in tqdm(val_loader):
                     val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
                     val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
-                    val_output_captions,_ = net((val_image_batch, val_captions_batch))
+                    val_output_captions = net((val_image_batch, val_captions_batch))
                     val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
                     val_epoch_loss+=val_loss
                 val_epoch_loss /= len(val_loader) 

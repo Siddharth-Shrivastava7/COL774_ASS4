@@ -6,3 +6,79 @@ train_loss_epoch: 1    0.00019065359083469957
 in_validation
 val_loss_epoch: 1    0.00015024538151919842
 Model_updated
+train_loss_epoch: 2    0.00010406084766145796
+in_validation
+val_loss_epoch: 2    9.579828474670649e-05
+Model_updated
+train_loss_epoch: 3    6.922620377736166e-05
+in_validation
+val_loss_epoch: 3    6.80598895996809e-05
+Model_updated
+train_loss_epoch: 4    5.001632234780118e-05
+in_validation
+val_loss_epoch: 4    5.125607276568189e-05
+Model_updated
+train_loss_epoch: 5    3.804408697760664e-05
+in_validation
+val_loss_epoch: 5    4.012830322608352e-05
+Model_updated
+train_loss_epoch: 6    3.0012974093551748e-05
+in_validation
+val_loss_epoch: 6    3.2424719393020496e-05
+Model_updated
+train_loss_epoch: 7    2.4140457753674127e-05
+in_validation
+val_loss_epoch: 7    2.6768531824927777e-05
+Model_updated
+train_loss_epoch: 8    1.9904675355064683e-05
+in_validation
+val_loss_epoch: 8    2.2170488591655158e-05
+Model_updated
+train_loss_epoch: 9    1.671109930612147e-05
+in_validation
+val_loss_epoch: 9    1.8945718693430535e-05
+Model_updated
+train_loss_epoch: 10    1.4039511370356195e-05
+in_validation
+val_loss_epoch: 10    1.611364677955862e-05
+Model_updated
+train_loss_epoch: 11    1.1810266187239904e-05
+in_validation
+val_loss_epoch: 11    1.3571087947639171e-05
+Model_updated
+train_loss_epoch: 12    1.0062658475362696e-05
+in_validation
+val_loss_epoch: 12    1.1845132576127071e-05
+Model_updated
+train_loss_epoch: 13    8.808165148366243e-06
+in_validation
+val_loss_epoch: 13    1.0398698577773757e-05
+Model_updated
+train_loss_epoch: 14    7.76553224568488e-06
+in_validation
+val_loss_epoch: 14    9.202205546898767e-06
+Model_updated
+train_loss_epoch: 15    6.892516921652714e-06
+in_validation
+val_loss_epoch: 15    8.205448466469534e-06
+Model_updated
+train_loss_epoch: 16    6.0920469877601136e-06
+in_validation
+val_loss_epoch: 16    7.12419659976149e-06
+Model_updated
+train_loss_epoch: 17    5.156359293323476e-06
+in_validation
+val_loss_epoch: 17    6.203038083185675e-06
+Model_updated
+train_loss_epoch: 18    4.556852218229324e-06
+in_validation
+val_loss_epoch: 18    5.5397135838575196e-06
+Model_updated
+train_loss_epoch: 19    3.885694695782149e-06
+in_validation
+val_loss_epoch: 19    4.6544182623620145e-06
+Model_updated
+train_loss_epoch: 20    3.298289584563463e-06
+in_validation
+val_loss_epoch: 20    4.095575604878832e-06
+Model_updated
