@@ -22,7 +22,7 @@ from PIL import Image
 from torchvision.models.inception import BasicConv2d, InceptionA 
 from torch.optim.lr_scheduler import StepLR
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "1" 
+os.environ["CUDA_VISIBLE_DEVICES"] = "7" 
 
 import nltk
 stopwords = nltk.corpus.stopwords.words('english') 
