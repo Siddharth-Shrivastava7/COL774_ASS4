@@ -18,11 +18,11 @@ import os
 import math 
 from tensorboardX import SummaryWriter 
 from nltk.translate.bleu_score import sentence_bleu, corpus_bleu
-
+from Beam_search import beam_search_pred, greedy_search
 
 torch.backends.cudnn.benchmark = True 
 
-# os.environ["CUDA_VISIBLE_DEVICES"] = "1" 
+# os.environ["CUDA_VISIBLE_DEVICES"] = "5" 
 
 import nltk
 stopwords = nltk.corpus.stopwords.words('english') 
@@ -41,7 +41,11 @@ complete the req args
 parser.add_argument('-tr', '--train_tsv_path', default='/home/sidd_s/assign/COL774_ASS4/Train_text.tsv') 
 parser.add_argument('-imdirtr', '--image_dir_train', default='/home/sidd_s/assign/data') 
 parser.add_argument('-imdirte', '--image_dir_test', default='/home/sidd_s/assign/data')  
-parser.add_argument('-ms', '--model_save_path', default='/home/sidd_s/assign/non_comp.pth')
+parser.add_argument('-ms', '--model_save_path', default='/home/sidd_s/assign/non_comp.pth') 
+parser.add_argument('-md', '--model_load_path', default='/home/sidd_s/assign/non_comp.pth')  
+parser.add_argument('--train', action='store_true')   
+parser.add_argument('--test', action='store_true')   
+parser.add_argument('--val', action='store_true') 
 
 args = parser.parse_args()
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu") 
@@ -214,6 +218,11 @@ class CaptionsPreprocessing:
 
         return lookup_tensor
 
+    def vocab_dict(self):
+        vocab = self.vocab 
+        # Generate tensors
+        word_map = dict(zip(iter(vocab), range(len(vocab))))
+        return word_map
 
 ## dataset class 
 
@@ -314,37 +323,42 @@ class ImageCaptionsNet(nn.Module):
 
     def get_bs_pred(self, features, hidden=None):
         if(hidden != None):
-            features = self.embed(features).unsqueeze(1)
+            # print(hidden[0].shape) # torch.Size([1, 1, 512]) 
+            features = self.embed(features).unsqueeze(1) 
+            # features = self.embed(features)
+            # print('***************')
+            # print(features.shape) # torch.Size([1, 1, 512])
+        # print(hidden)
+        # print(features.shape) 
+        # features = self.embed(features).unsqueeze(1) 
         output, hidden = self.lstm(features, hidden)
-        output = self.linear(output.squeeze(1))
+        output = self.linear_lstm(output.squeeze(1))
         return output, hidden
 
     def enc_bs(self, x): 
         feat = self.resnet(x) 
-        feat = feat.reshape(feat.size(0), -1) 
-        feat = self.bn(self.linear(feat))  ## adding batch norm  
+        # print(feat.shape) # torch.Size([1, 2048, 1, 1])
+        feat = feat.reshape(feat.size(0), -1)  
+        feat = self.bn(self.linear(feat))  ## adding batch norm   
+        # feat = self.linear(feat) 
+        # print(feat.shape)
         return feat
 
 
-def beam_search_pred(model, image,  vocab_dict, beam_width=3, log=False): 
-    enc_feat = model.enc_bs(image) 
-    outputs, hidden = model.get_bs_pred(enc_feat)
-    
-    pass  
 
+def blue_score(actual, user, sentence = True):  
+    score = np.mean([nltk.translate.bleu_score.sentence_bleu([list(actual[i])], list(user[i])) for i in range(len(user))])    
+    return score 
 
-
-
-def blue_score(references, candidates, sentence = False):  
-    if sentence:
-        ## candidates: list of tokens
-        ## references: list of tokens (can be multiple for one doc)
-        score = sentence_bleu(references, candidates)  
-    else:
-        ## candidates: list of list of tokens
-        ## references: list of doc where each doc is a list of references which is list of tokens
-        score = corpus_bleu(references, candidates)  
-    return score
+def read_raw_captions(tsv_path, val_indices):
+        captions_list = []
+        with open(tsv_path, 'r', encoding='utf-8') as f:
+            for img_caption_line in f.readlines(): 
+                img_captions = img_caption_line.strip().split('\t')  
+                captions_list.append(img_captions)
+                
+        captions_list = captions_list[:val_indices]
+        return captions_list
 
 
 if __name__ == '__main__': 
@@ -359,12 +373,10 @@ if __name__ == '__main__':
     captions_preprocessing_obj = CaptionsPreprocessing(CAPTIONS_FILE_PATH) 
     vocab = captions_preprocessing_obj.generate_vocabulary()
     vocab_size = len(vocab)
-
+    vocab_dict = captions_preprocessing_obj.vocab_dict() 
 
     net = ImageCaptionsNet(embed_size=512, hidden_size=512, vocab_size=vocab_size)
-
-    net = net.to(device)
-
+    net = net.to(device) 
     IMAGE_DIR = args.image_dir_train ## train image directory 
 
 
@@ -398,52 +410,72 @@ if __name__ == '__main__':
     val_loader = DataLoader(dataset, batch_size=VAL_BATCH_SIZE,
                                                     sampler=valid_sampler, num_workers=NUM_WORKERS) 
  
+    if args.train:
+
+        best_val_loss = np.inf 
+        val_check = 1
+        for epoch in tqdm(range(NUMBER_OF_EPOCHS)): 
+            train_epoch_loss = 0
+            for batch_idx, sample in tqdm(enumerate(train_loader)):
+                net.zero_grad() 
+                net.train() 
+                image_batch, captions_batch = sample['image'], sample['captions']
+            
+                image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
+                output_captions = net((image_batch, captions_batch))  
+                loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
+                train_epoch_loss += loss
+                loss.backward()
+                optimizer.step()  
 
 
-    best_val_loss = np.inf 
-    val_check = 1
-    for epoch in tqdm(range(NUMBER_OF_EPOCHS)): 
-        train_epoch_loss = 0
-        for batch_idx, sample in tqdm(enumerate(train_loader)):
-            net.zero_grad() 
-            net.train() 
-            image_batch, captions_batch = sample['image'], sample['captions']
+            train_epoch_loss /= len(train_loader)
+            print('train_loss_epoch:',epoch, '  ', train_epoch_loss.item())
+            writer.add_scalar('training loss', train_epoch_loss.item(), epoch) 
+
+            if epoch % val_check == 0: 
+                with torch.no_grad():
+                    net.eval()
+                    val_epoch_loss = 0 
+                    print('in_validation')
+                    for val_sample in tqdm(val_loader):
+                        val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
+                        val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
+                        val_output_captions = net((val_image_batch, val_captions_batch))
+                        val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
+                        val_epoch_loss+=val_loss
+                    val_epoch_loss /= len(val_loader) 
+                    writer.add_scalar('validation loss', val_epoch_loss.item(), epoch)
+                    print('val_loss_epoch:',epoch, '  ', val_epoch_loss.item())  
+                    if val_epoch_loss < best_val_loss: 
+                        best_val_loss = val_epoch_loss 
+                        torch.save(net.state_dict(), args.model_save_path)
+                        print('Model_updated')
         
-            image_batch, captions_batch = image_batch.to(device, dtype=torch.float), captions_batch.to(device)
-        
+        writer.close() 
 
-            output_captions = net((image_batch, captions_batch))  
-            loss = loss_function(output_captions.view(-1, vocab_size), captions_batch.view(-1))  
-            train_epoch_loss += loss
-            loss.backward()
-            optimizer.step()  
+    else: 
+        net.load_state_dict(torch.load(args.model_load_path)) 
+        net.eval() 
 
+        with torch.no_grad():
+            if args.test:
+                
+                pass 
 
-        train_epoch_loss /= len(train_loader)
-        print('train_loss_epoch:',epoch, '  ', train_epoch_loss.item())
-        writer.add_scalar('training loss', train_epoch_loss.item(), epoch) 
-
-        if epoch % val_check == 0: 
-            with torch.no_grad():
-                net.eval()
-                val_epoch_loss = 0 
-                print('in_validation')
+            elif args.val:
+                pred_captions_list = [] 
                 for val_sample in tqdm(val_loader):
+                    # print(val_sample)
                     val_image_batch, val_captions_batch = val_sample['image'], val_sample['captions']
-                    val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device)
-                    val_output_captions = net((val_image_batch, val_captions_batch))
-                    val_loss = loss_function(val_output_captions.view(-1, vocab_size), val_captions_batch.view(-1)) 
-                    val_epoch_loss+=val_loss
-                val_epoch_loss /= len(val_loader) 
-                writer.add_scalar('validation loss', val_epoch_loss.item(), epoch)
-                print('val_loss_epoch:',epoch, '  ', val_epoch_loss.item())  
-                if val_epoch_loss < best_val_loss: 
-                    best_val_loss = val_epoch_loss 
-                    torch.save(net.state_dict(), args.model_save_path)
-                    print('Model_updated')
-
-    writer.close() 
-
+                    val_image_batch, val_captions_batch = val_image_batch.to(device, dtype=torch.float), val_captions_batch.to(device) 
+                    # pred_caption = beam_search_pred(net, val_image_batch, vocab_dict)   
+                    pred_caption = greedy_search(net, val_image_batch,  vocab_dict)
+                    # print(pred_caption) 
+                    pred_captions_list.append(pred_caption) 
+                actual_caption_list = read_raw_captions(args.train_tsv_path, val_indices) 
+                score = blue_score(actual_caption_list, pred_captions_list) 
+                print(score)
 
 
     
